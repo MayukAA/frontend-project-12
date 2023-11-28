@@ -4,6 +4,8 @@
   "description": "[![Actions Status](https://github.com/MayukAA/frontend-project-12/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/MayukAA/frontend-project-12/actions)",
   "main": "index.js",
   "scripts": {
+    "build": "npm run build --prefix frontend",
+    "start": "start-server -s ./frontend/build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
