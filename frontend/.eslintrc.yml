@@ -9,5 +9,7 @@ parserOptions:
   sourceType: module
 
 rules:
+  no-console: 0
   react/react-in-jsx-scope: 0
   react/jsx-uses-react: 0
+  react/function-component-definition: [2, { "namedComponents": "arrow-function" }]
