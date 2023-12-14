@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import './App.css';
 import AuthorizationProvider from './context/AuthorizationProvider';
+import Navbar from './components/Navbar';
 import ChatsPage from './components/ChatsPage';
 import NotFoundPage from './components/NotFoundPage';
 import LoginPage from './components/LoginPage';
@@ -23,6 +24,7 @@ const IsAuthorization = () => {
 const App = () => (
   <AuthorizationProvider>
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path={routes.chatsPagePath()} element={<IsAuthorization />} />
         <Route path={routes.loginPagePath()} element={<LoginPage />} />
