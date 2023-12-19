@@ -12,20 +12,10 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
 
 import AuthorizationContext from '../context/AuthorizationContext';
-import routes from '../routes';
-
-const SignupSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(2, 'Минимум 2 буквы')
-    .max(25, 'Максимум 25 букв')
-    .required('Обязательное поле'),
-  password: Yup.string()
-    .min(5, 'Минимум 5 символов')
-    .required('Обязательное поле'),
-});
+import loginSchema from '../utils/validationLoginSchema';
+import routes from '../utils/routes';
 
 const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
@@ -52,7 +42,7 @@ const LoginPage = () => {
               <div className="card-body row justify-content-center p-5">
                 <Formik
                   initialValues={{ username: '', password: '' }}
-                  validationSchema={SignupSchema}
+                  validationSchema={loginSchema}
                   validateOnChange={false}
                   validateOnBlur={false}
                   validateOnSubmit={true}

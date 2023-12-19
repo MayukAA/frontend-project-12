@@ -12,7 +12,7 @@ import Navbar from './components/Navbar';
 import ChatsPage from './components/ChatsPage';
 import NotFoundPage from './components/NotFoundPage';
 import LoginPage from './components/LoginPage';
-import routes from './routes';
+import routes from './utils/routes';
 
 const IsAuthorization = () => {
   const currentUser = JSON.parse(localStorage.getItem('user')); // нужен ли тут парсинг? Потестить, в общем;

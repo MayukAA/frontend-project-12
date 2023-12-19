@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthorizationContext from '../context/AuthorizationContext';
-import routes from '../routes';
+import routes from '../utils/routes';
 
 const Navbar = () => {
   const { user, deAuthorization } = useContext(AuthorizationContext);
