@@ -4,7 +4,12 @@ import '../styles.scss';
 import 'bootstrap';
 import axios from 'axios';
 import cn from 'classnames';
-import { useContext, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import * as Yup from 'yup';
@@ -26,7 +31,12 @@ const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
   const [authorizationError, setAuthorizationError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+  const labelEl = useRef();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    labelEl.current.focus();
+  }, []);
 
   const formFieldClass = cn('form-control', {
     'is-invalid': authorizationError,
@@ -51,7 +61,6 @@ const LoginPage = () => {
                     setNetworkError(false);
                     try {
                       const response = await axios.post(routes.loginPath(), values);
-                      console.log(response); // !!!
                       authorization(response.data);
                       navigate('/');
                     } catch (error) {
@@ -60,7 +69,6 @@ const LoginPage = () => {
                         setAuthorizationError(true);
                       } else {
                         setNetworkError(true);
-                        console.log(networkError); // !!!
                       }
                     }
                   }}
@@ -70,7 +78,7 @@ const LoginPage = () => {
                       <h1 className="text-center mb-4">Войти</h1>
                       <div className="form-floating mb-3">
                         <Field type="text" name="username" placeholder="Ваш ник" id="username" className={formFieldClass} />
-                        <label htmlFor="username">Ваш ник</label>
+                        <label htmlFor="username" ref={labelEl}>Ваш ник</label>
                         {errors.username && touched.username ? (
                           <p className="text-danger p-1">{errors.username}</p>
                         ) : null}
