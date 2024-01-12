@@ -13,7 +13,7 @@ import dispatchData from '../utils/dispatchData';
 import { selectorsChannels, updateChannel } from '../slices/channelsSlice';
 import { selectorsMessages, addMessage } from '../slices/messagesSlice';
 
-const socket = io('ws://localhost:3000');
+const socket = io('wss://hexlet-chat-spn2.onrender.com');
 
 const ChatsPage = () => {
   const defaultCurrentChannel = { id: 1, name: 'general' };
