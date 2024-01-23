@@ -7,6 +7,7 @@ import cn from 'classnames';
 
 const AddChannelModal = ({ setCurrentModal, socket, channelsNames, setCurrentChannel }) => {
   const [invalidForm, setInvalidForm] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
 
   const closeModal = () => setCurrentModal(null);
@@ -65,10 +66,13 @@ const AddChannelModal = ({ setCurrentModal, socket, channelsNames, setCurrentCha
                 validateOnBlur={false}
                 validateOnSubmit={true}
                 onSubmit={(value) => {
-                  socket.emit('newChannel', value, ({ data }) => {
-                    setCurrentChannel({ id: data.id, name: data.name}); // перенос создателя канала в новый канал;
+                  setButtonsDisabled(true);
+                  socket.emit('newChannel', value, ({ status, data }) => {
+                    if (status === 'ok') {
+                      setCurrentChannel({ id: data.id, name: data.name }); // перенос создателя канала в новый канал;
+                      closeModal();
+                    }
                   });
-                  closeModal();
                 }}
               >
                 {({ errors, touched }) => (
@@ -82,10 +86,11 @@ const AddChannelModal = ({ setCurrentModal, socket, channelsNames, setCurrentCha
                           type="button"
                           className="btn btn-outline-dark me-2"
                           onClick={closeModal}
+                          disabled={buttonsDisabled}
                         >
                           Отменить
                         </button>
-                        <button type="submit" className="btn btn-outline-primary">Отправить</button>
+                        <button type="submit" className="btn btn-outline-primary" disabled={buttonsDisabled}>Отправить</button>
                       </div>
                     </div>
                   </Form>

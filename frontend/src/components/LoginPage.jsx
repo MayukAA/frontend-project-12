@@ -21,6 +21,7 @@ const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
   const [authorizationError, setAuthorizationError] = useState(false);
   const [networkError, setNetworkError] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
   const navigate = useNavigate();
 
@@ -45,16 +46,18 @@ const LoginPage = () => {
                   validationSchema={loginSchema}
                   validateOnChange={false}
                   validateOnBlur={false}
-                  validateOnSubmit={true}
+                  validateOnSubmit
                   onSubmit={async (values) => {
                     setAuthorizationError(false);
                     setNetworkError(false);
+                    setButtonDisabled(true);
                     try {
                       const response = await axios.post(routes.loginPath(), values);
                       authorization(response.data);
                       navigate('/');
                     } catch (error) {
                       console.error(error);
+                      setButtonDisabled(false);
                       if (error.response.status === 401) {
                         setAuthorizationError(true);
                       } else {
@@ -69,19 +72,21 @@ const LoginPage = () => {
                       <div className="form-floating mb-3">
                         <Field type="text" name="username" placeholder="Ваш ник" id="username" className={formFieldClass} />
                         <label htmlFor="username" ref={labelEl}>Ваш ник</label>
-                        {errors.username && touched.username ? (
-                          <p className="text-danger p-1">{errors.username}</p>
-                        ) : null}
+                        {(errors.username && touched.username) && (
+                          <p className="text-danger px-1">{errors.username}</p>
+                        )}
                       </div>
                       <div className="form-floating mb-3">
                         <Field type="password" name="password" placeholder="Пароль" id="password" className={formFieldClass} />
                         <label className="form-label" htmlFor="password">Пароль</label>
-                        {errors.password && touched.password ? (
-                          <p className="text-danger p-1">{errors.password}</p>
-                        ) : null}
-                        {authorizationError && <div className="card bg-danger text-light mt-1 p-1">Неверные имя пользователя или пароль</div>}
+                        {(errors.password && touched.password) && (
+                          <p className="text-danger px-1">{errors.password}</p>
+                        )}
+                        {authorizationError && (
+                          <div className="card bg-danger text-light mt-1 p-1">Неверные имя пользователя или пароль</div>
+                        )}
                       </div>
-                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary">Войти</button>
+                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={buttonDisabled}>Войти</button>
                     </Form>
                   )}
                 </Formik>

@@ -7,6 +7,7 @@ import cn from 'classnames';
 
 const RenameChannelModal = ({ setCurrentModal, socket, id, oldName, channelsNames, currentChannelId, setCurrentChannel }) => {
   const [invalidForm, setInvalidForm] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
 
   const closeModal = () => setCurrentModal(null);
@@ -67,13 +68,14 @@ const RenameChannelModal = ({ setCurrentModal, socket, id, oldName, channelsName
                 validateOnSubmit={true}
                 onSubmit={(value) => {
                   value.id = id;
+                  setButtonsDisabled(true);
                   socket.emit('renameChannel', value, (response) => {
                     if (response.status === 'ok') {
                       // для "мгновенного" изменения названия канала в поле над сообщениями:
                       (value.id === currentChannelId) && setCurrentChannel({ id: value.id, name: value.name });
+                      closeModal();
                     }
                   });
-                  closeModal();
                 }}
               >
                 {({ errors, touched }) => (
@@ -92,10 +94,11 @@ const RenameChannelModal = ({ setCurrentModal, socket, id, oldName, channelsName
                         type="button"
                         className="btn btn-outline-dark me-2"
                         onClick={closeModal}
+                        disabled={buttonsDisabled}
                       >
                         Отменить
                       </button>
-                      <button type="submit" className="btn btn-outline-primary">Отправить</button>
+                      <button type="submit" className="btn btn-outline-primary" disabled={buttonsDisabled}>Отправить</button>
                     </div>
                   </Form>
                 )}

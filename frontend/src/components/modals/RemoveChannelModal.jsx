@@ -1,13 +1,20 @@
 /* eslint-disable */
 
+import { useState } from 'react';
+
 const RemoveChannelModal = ({ setCurrentModal, socket, id, name, currentChannelId, setCurrentChannel, defaultCurrentChannel }) => {
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
+
   const closeModal = () => setCurrentModal(null);
 
   const emitSocket = (chnlId) => {
-    socket.emit('removeChannel', { id: chnlId }, () => {
-      (chnlId === currentChannelId) && setCurrentChannel(defaultCurrentChannel);
+    setButtonsDisabled(true);
+    socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
+      if (status === 'ok') {
+        (chnlId === currentChannelId) && setCurrentChannel(defaultCurrentChannel);
+        closeModal();
+      }
     });
-    closeModal();
   };
 
   return (
@@ -33,6 +40,7 @@ const RemoveChannelModal = ({ setCurrentModal, socket, id, name, currentChannelI
                   type="button"
                   className="btn btn-outline-dark me-2"
                   onClick={closeModal}
+                  disabled={buttonsDisabled}
                 >
                   Отменить
                 </button>
@@ -40,6 +48,7 @@ const RemoveChannelModal = ({ setCurrentModal, socket, id, name, currentChannelI
                   type="button"
                   className="btn btn-outline-danger"
                   onClick={() => emitSocket(id)}
+                  disabled={buttonsDisabled}
                 >
                   Удалить
                 </button>

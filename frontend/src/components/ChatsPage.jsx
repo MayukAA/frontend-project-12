@@ -17,8 +17,8 @@ import AddChannelModal from './modals/AddChannelModal';
 import RemoveChannelModal from './modals/RemoveChannelModal';
 import RenameChannelModal from './modals/RenameChannelModal';
 
-const socket = io('ws://localhost:3000');
-// const socket = io('wss://hexlet-chat-spn2.onrender.com');
+// const socket = io('ws://localhost:3000');
+const socket = io('wss://hexlet-chat-spn2.onrender.com');
 
 const ChatsPage = () => {
   const defaultCurrentChannel = { id: 1, name: 'general' };
@@ -26,6 +26,8 @@ const ChatsPage = () => {
   const [sendMessageError, setSendMessageError] = useState(false);
   const [currentModal, setCurrentModal] = useState(null);
   const labelEl = useRef();
+  const scrollChnlEl = useRef();
+  const scrollMsgEl = useRef();
   const dispatch = useDispatch();
 
   const channels = useSelector(selectorsChannels.selectAll);
@@ -61,6 +63,42 @@ const ChatsPage = () => {
     dropdownUlEl && dropdownUlEl.classList.remove('show'); // для исправления бага с незакрывающимся dropdown;
   }, [currentChannel]);
 
+  useEffect(() => {
+    if (scrollChnlEl.current) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) {
+            scrollChnlEl.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        },
+        {
+          rootMargin: '100px',
+          threshold: 0.99,
+        },
+      );
+
+      observer.observe(scrollChnlEl.current);
+    }
+  }, [scrollChnlEl.current]);
+
+  useEffect(() => {
+    if (scrollMsgEl.current) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          // еще раз проверка "scrollMsgEl.current", т.к. без нее при смене канала с сообщениями на канал без сообщений лезет ошибка в консоли;
+          if (!entry.isIntersecting && scrollMsgEl.current) {
+            scrollMsgEl.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        },
+        {
+          threshold: 0.95,
+        },
+      );
+
+      observer.observe(scrollMsgEl.current);
+    }
+  }, [currentMessages]);
+
   const { username } = JSON.parse(localStorage.getItem('user'));
   const currDropdownClass = 'dropdown-toggle dropdown-toggle-split btn btn-dark rounded-0';
   const notCurrDropdownClass = 'dropdown-toggle dropdown-toggle-split btn rounded-0';
@@ -77,6 +115,7 @@ const ChatsPage = () => {
         type="button"
         className={buttonChannelClass}
         onClick={() => setCurrentChannel({ id, name })}
+        ref={id === currentChannel.id ? scrollChnlEl : null}
       >
         <span className="me-1">#</span>
         {name}
@@ -174,8 +213,12 @@ const ChatsPage = () => {
               </span>
             </div>
             <div id="messages-box" className="chat-messages overflow-auto px-5">
-              {(currentMessagesIds.length > 0) && currentMessages.map(({ body, id, author }) => (
-                <div className={author === username ? ownMsgClass : notOwnMsgClass} key={id}>
+              {(currentMessagesIds.length > 0) && currentMessages.map(({ body, id, author }, index) => (
+                <div
+                  className={author === username ? ownMsgClass : notOwnMsgClass}
+                  ref={(index + 1) === currentMessagesIds.length ? scrollMsgEl : null}
+                  key={id}
+                >
                   <b>{author}</b>
                   : {body}
                 </div>
@@ -188,20 +231,19 @@ const ChatsPage = () => {
                   socket.emit('newMessage', { body: message, channelId: currentChannel.id, author: username }, ({ status }) => {
                     status === 'ok' ? setSendMessageError(false) : setSendMessageError(true);
                   });
+                  labelEl.current.focus();
                 }}
               >
                 {({ dirty }) => (
                   <Form className="py-1">
                     {sendMessageError && <div className="card bg-danger text-light mb-1 me-2 p-1 ps-2">Ошибка отправки сообщения!</div>}
                     <div className="d-flex has-validation">
-                      <Field name="message" aria-label="Новое сообщение" placeholder="Введите сообщение..." id="message" className="form-control border-dark py-1 px-2 me-2" />
+                      <Field name="message" aria-label="Новое сообщение" placeholder="Введите сообщение..." id="message" className="form-control border-secondary py-1 px-2 me-2" />
                       <label htmlFor="message" ref={labelEl} />
-                      {dirty && (
-                        <button type="submit" className="btn btn-group-vertical">
-                          <GoPaperAirplane className="bigIcon" />
-                          <span className="visually-hidden">Отправить</span>
-                        </button>
-                      )}
+                      <button type="submit" className="text-primary btn btn-group-vertical" disabled={!dirty}>
+                        <GoPaperAirplane className="bigIcon" />
+                        <span className="visually-hidden">Отправить</span>
+                      </button>
                     </div>
                   </Form>
                 )}
