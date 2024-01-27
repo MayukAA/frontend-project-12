@@ -1,29 +1,34 @@
 /* eslint-disable */
 
-import { useState, useEffect, useRef } from 'react';
+import {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
 import cn from 'classnames';
+import AuthorizationContext from '../../context/AuthorizationContext';
+import { getModalSchema } from '../../utils/validationLoginSchema';
 
-const RenameChannelModal = ({ setCurrentModal, socket, id, oldName, channelsNames, currentChannelId, setCurrentChannel }) => {
+const RenameChannelModal = ({
+  socket,
+  id,
+  oldName,
+  channelsNames,
+}) => {
+  const { setCurrentModal, currentChannel, setCurrentChannel } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
 
   const closeModal = () => setCurrentModal(null);
+  const channelSchema = getModalSchema(channelsNames);
 
   useEffect(() => {
     inputEl.current.focus();
     inputEl.current.select();
   }, []);
-
-  const channelSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
-      .required('Обязательное поле')
-      .notOneOf(channelsNames, 'Такое название уже существует'),
-  });
 
   const formFieldClass = cn('form-control', {
     'mb-3': !invalidForm,
@@ -65,14 +70,14 @@ const RenameChannelModal = ({ setCurrentModal, socket, id, oldName, channelsName
                 validationSchema={channelSchema}
                 validateOnChange={false}
                 validateOnBlur={false}
-                validateOnSubmit={true}
+                validateOnSubmit
                 onSubmit={(value) => {
                   value.id = id;
                   setButtonsDisabled(true);
                   socket.emit('renameChannel', value, (response) => {
                     if (response.status === 'ok') {
                       // для "мгновенного" изменения названия канала в поле над сообщениями:
-                      (value.id === currentChannelId) && setCurrentChannel({ id: value.id, name: value.name });
+                      (value.id === currentChannel.id) && setCurrentChannel({ id: value.id, name: value.name });
                       closeModal();
                     }
                   });

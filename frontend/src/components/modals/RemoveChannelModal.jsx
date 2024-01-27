@@ -1,8 +1,15 @@
 /* eslint-disable */
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import AuthorizationContext from '../../context/AuthorizationContext';
 
-const RemoveChannelModal = ({ setCurrentModal, socket, id, name, currentChannelId, setCurrentChannel, defaultCurrentChannel }) => {
+const RemoveChannelModal = ({ socket, id, name }) => {
+  const {
+    defaultCurrentChannel,
+    setCurrentModal,
+    currentChannel,
+    setCurrentChannel,
+  } = useContext(AuthorizationContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const closeModal = () => setCurrentModal(null);
@@ -11,7 +18,7 @@ const RemoveChannelModal = ({ setCurrentModal, socket, id, name, currentChannelI
     setButtonsDisabled(true);
     socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
       if (status === 'ok') {
-        (chnlId === currentChannelId) && setCurrentChannel(defaultCurrentChannel);
+        (chnlId === currentChannel.id) && setCurrentChannel(defaultCurrentChannel);
         closeModal();
       }
     });

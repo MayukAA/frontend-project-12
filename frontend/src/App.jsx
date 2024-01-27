@@ -15,8 +15,7 @@ import LoginPage from './components/LoginPage';
 import routes from './utils/routes';
 
 const IsAuthorization = () => {
-  const currentUser = JSON.parse(localStorage.getItem('user')); // нужен ли тут парсинг? Потестить, в общем;
-  console.log(currentUser);
+  const currentUser = localStorage.getItem('user');
 
   return currentUser ? <ChatsPage /> : <Navigate to={routes.loginPagePath()} />;
 };

@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 
 import AuthorizationContext from '../context/AuthorizationContext';
-import loginSchema from '../utils/validationLoginSchema';
+import { loginSchema } from '../utils/validationLoginSchema';
 import routes from '../utils/routes';
 
 const LoginPage = () => {

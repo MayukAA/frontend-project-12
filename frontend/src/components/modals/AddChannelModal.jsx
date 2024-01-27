@@ -1,28 +1,28 @@
 /* eslint-disable */
 
-import { useState, useEffect, useRef } from 'react';
+import {
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { Formik, Field, Form } from 'formik';
-import * as Yup from 'yup';
 import cn from 'classnames';
+import AuthorizationContext from '../../context/AuthorizationContext';
+import { getModalSchema } from '../../utils/validationLoginSchema';
 
-const AddChannelModal = ({ setCurrentModal, socket, channelsNames, setCurrentChannel }) => {
+const AddChannelModal = ({ socket, channelsNames }) => {
+  const { setCurrentModal, setCurrentChannel } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
 
   const closeModal = () => setCurrentModal(null);
+  const channelSchema = getModalSchema(channelsNames);
 
   useEffect(() => {
     labelEl.current.focus();
   }, []);
-
-  const channelSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, 'Минимум 3 символа')
-      .max(20, 'Максимум 20 символов')
-      .required('Обязательное поле')
-      .notOneOf(channelsNames, 'Такое название уже существует'),
-  });
 
   const formFieldClass = cn('form-control', {
     'mb-3': !invalidForm,
@@ -64,12 +64,13 @@ const AddChannelModal = ({ setCurrentModal, socket, channelsNames, setCurrentCha
                 validationSchema={channelSchema}
                 validateOnChange={false}
                 validateOnBlur={false}
-                validateOnSubmit={true}
+                validateOnSubmit
                 onSubmit={(value) => {
                   setButtonsDisabled(true);
                   socket.emit('newChannel', value, ({ status, data }) => {
                     if (status === 'ok') {
-                      setCurrentChannel({ id: data.id, name: data.name }); // перенос создателя канала в новый канал;
+                      // перенос создателя канала в новый канал:
+                      setCurrentChannel({ id: data.id, name: data.name });
                       closeModal();
                     }
                   });
