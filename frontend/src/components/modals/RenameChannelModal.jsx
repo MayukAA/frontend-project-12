@@ -9,7 +9,7 @@ import {
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
-import { getModalSchema } from '../../utils/validationLoginSchema';
+import { getModalSchema } from '../../utils/validationSchemas';
 
 const RenameChannelModal = ({
   socket,
@@ -17,11 +17,17 @@ const RenameChannelModal = ({
   oldName,
   channelsNames,
 }) => {
-  const { setCurrentModal, currentChannel, setCurrentChannel } = useContext(AuthorizationContext);
+  const {
+    currentUser,
+    setCurrentModal,
+    currentChannel,
+    setCurrentChannel,
+  } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
 
+  const { username } = currentUser;
   const closeModal = () => setCurrentModal(null);
   const channelSchema = getModalSchema(channelsNames);
 
@@ -78,6 +84,9 @@ const RenameChannelModal = ({
                     if (response.status === 'ok') {
                       // для "мгновенного" изменения названия канала в поле над сообщениями:
                       (value.id === currentChannel.id) && setCurrentChannel({ id: value.id, name: value.name });
+                      // для служебного сообщения о переименовании:
+                      const body = `Пользователь ${username} переименовал канал: # ${oldName} -> # ${value.name}`;
+                      socket.emit('newMessage', { body, channelId: id, author: 'serviceMsg' });
                       closeModal();
                     }
                   });

@@ -9,14 +9,15 @@ import {
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
-import { getModalSchema } from '../../utils/validationLoginSchema';
+import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ socket, channelsNames }) => {
-  const { setCurrentModal, setCurrentChannel } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal, setCurrentChannel } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
 
+  const { username } = currentUser;
   const closeModal = () => setCurrentModal(null);
   const channelSchema = getModalSchema(channelsNames);
 
@@ -71,6 +72,9 @@ const AddChannelModal = ({ socket, channelsNames }) => {
                     if (status === 'ok') {
                       // перенос создателя канала в новый канал:
                       setCurrentChannel({ id: data.id, name: data.name });
+                      // для служебного сообщения:
+                      const body = `Пользователь ${username} создал канал`;
+                      socket.emit('newMessage', { body, channelId: data.id, author: 'serviceMsg' });
                       closeModal();
                     }
                   });

@@ -52,6 +52,7 @@ const ChatsPage = () => {
   const channelsNames = channels.map((chnl) => chnl.name);
   const messages = useSelector(selectorsMessages.selectAll);
   const currentMessages = messages.filter((msg) => msg.channelId === currentChannel.id);
+  const messagesCount = currentMessages.filter((msg) => msg.author !== 'serviceMsg').length;
 
   useEffect(() => {
     setCurrentChannel(defaultCurrentChannel);
@@ -196,19 +197,29 @@ const ChatsPage = () => {
                 </b>
               </p>
               <span className="text-muted">
-                {currentMessages.length} сообщений
+                {messagesCount} сообщений
               </span>
             </div>
             <div id="messages-box" className="chat-messages overflow-auto px-5">
               {(currentMessages.length > 0) && currentMessages.map(({ body, id, author }, index) => (
-                <div
-                  className={author === username ? ownMsgClass : notOwnMsgClass}
-                  ref={(index + 1) === currentMessages.length ? scrollMsgEl : null}
-                  key={id}
-                >
-                  <b>{author}</b>
-                  : {body}
-                </div>
+                author === 'serviceMsg' ? (
+                  <div
+                    className="text-muted text-center mb-1"
+                    ref={(index + 1) === currentMessages.length ? scrollMsgEl : null}
+                    key={id}
+                  >
+                    {body}
+                  </div>
+                ) : (
+                  <div
+                    className={author === username ? ownMsgClass : notOwnMsgClass}
+                    ref={(index + 1) === currentMessages.length ? scrollMsgEl : null}
+                    key={id}
+                  >
+                    <b>{author}</b>
+                    : {body}
+                  </div>
+                )
               ))}
             </div>
             <div className="mt-auto px-5 py-3">
