@@ -12,6 +12,7 @@ import Navbar from './components/Navbar';
 import ChatsPage from './components/ChatsPage';
 import NotFoundPage from './components/NotFoundPage';
 import LoginPage from './components/LoginPage';
+import SignUpPage from './components/SignUpPage';
 import routes from './utils/routes';
 
 const IsAuthorization = () => {
@@ -27,6 +28,7 @@ const App = () => (
       <Routes>
         <Route path={routes.chatsPagePath()} element={<IsAuthorization />} />
         <Route path={routes.loginPagePath()} element={<LoginPage />} />
+        <Route path={routes.signupPagePath()} element={<SignUpPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

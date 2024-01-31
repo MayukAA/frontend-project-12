@@ -56,7 +56,7 @@ const LoginPage = () => {
                       authorization(response.data);
                       navigate('/');
                     } catch (error) {
-                      console.error(error);
+                      // console.error(error);
                       setButtonDisabled(false);
                       if (error.response.status === 401) {
                         setAuthorizationError(true);
@@ -90,6 +90,12 @@ const LoginPage = () => {
                     </Form>
                   )}
                 </Formik>
+              </div>
+              <div className="card-footer p-4">
+                <div className="text-center">
+                  <span>Нет аккаунта? </span>
+                  <a href="/signup">Регистрация</a>
+                </div>
               </div>
             </div>
           </div>
