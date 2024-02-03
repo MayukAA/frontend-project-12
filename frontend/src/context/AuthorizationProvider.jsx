@@ -17,8 +17,6 @@ const AuthorizationProvider = ({ children }) => {
     setUser(null);
   };
 
-  const defaultCurrentChannel = { id: 1, name: 'general' };
-  const [currentChannel, setCurrentChannel] = useState(defaultCurrentChannel);
   const [currentModal, setCurrentModal] = useState(null);
 
   return (
@@ -26,9 +24,6 @@ const AuthorizationProvider = ({ children }) => {
       currentUser,
       authorization,
       deAuthorization,
-      defaultCurrentChannel,
-      currentChannel,
-      setCurrentChannel,
       currentModal,
       setCurrentModal,
     }}>

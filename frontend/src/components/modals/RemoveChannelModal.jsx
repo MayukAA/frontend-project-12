@@ -4,12 +4,7 @@ import { useContext, useState } from 'react';
 import AuthorizationContext from '../../context/AuthorizationContext';
 
 const RemoveChannelModal = ({ socket, id, name }) => {
-  const {
-    defaultCurrentChannel,
-    setCurrentModal,
-    currentChannel,
-    setCurrentChannel,
-  } = useContext(AuthorizationContext);
+  const { setCurrentModal } = useContext(AuthorizationContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const closeModal = () => setCurrentModal(null);
@@ -17,10 +12,7 @@ const RemoveChannelModal = ({ socket, id, name }) => {
   const emitSocket = (chnlId) => {
     setButtonsDisabled(true);
     socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
-      if (status === 'ok') {
-        (chnlId === currentChannel.id) && setCurrentChannel(defaultCurrentChannel);
-        closeModal();
-      }
+      if (status === 'ok') closeModal();
     });
   };
 

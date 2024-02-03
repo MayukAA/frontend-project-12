@@ -11,8 +11,8 @@ import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
 import { getModalSchema } from '../../utils/validationSchemas';
 
-const AddChannelModal = ({ socket, channelsNames }) => {
-  const { currentUser, setCurrentModal, setCurrentChannel } = useContext(AuthorizationContext);
+const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
+  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
@@ -71,7 +71,7 @@ const AddChannelModal = ({ socket, channelsNames }) => {
                   socket.emit('newChannel', value, ({ status, data }) => {
                     if (status === 'ok') {
                       // перенос создателя канала в новый канал:
-                      setCurrentChannel({ id: data.id, name: data.name });
+                      setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
                       // для служебного сообщения:
                       const body = `Пользователь ${username} создал канал`;
                       socket.emit('newMessage', { body, channelId: data.id, author: 'serviceMsg' });

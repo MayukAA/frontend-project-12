@@ -24,6 +24,7 @@ import {
   renameChannel,
 } from '../slices/channelsSlice';
 import { selectorsMessages, addMessage } from '../slices/messagesSlice';
+import { updateCurrentChannel } from '../slices/currentChannelSlice';
 import AddChannelModal from './modals/AddChannelModal';
 import RemoveChannelModal from './modals/RemoveChannelModal';
 import RenameChannelModal from './modals/RenameChannelModal';
@@ -32,30 +33,27 @@ import RenameChannelModal from './modals/RenameChannelModal';
 const socket = io('wss://hexlet-chat-spn2.onrender.com');
 
 const ChatsPage = () => {
-  const {
-    currentUser,
-    defaultCurrentChannel,
-    currentChannel,
-    setCurrentChannel,
-    currentModal,
-    setCurrentModal,
-  } = useContext(AuthorizationContext);
+  const { currentUser, currentModal, setCurrentModal } = useContext(AuthorizationContext);
   const [sendMessageError, setSendMessageError] = useState(false);
+  const dispatch = useDispatch();
   const labelEl = useRef();
   const channelsContainerEl = useRef();
   const scrollChnlEl = useRef();
   const scrollMsgEl = useRef();
-  const dispatch = useDispatch();
 
   const { username } = currentUser;
+  const currentChannelFromSlice = useSelector((state) => state.currentChannel);
+  const { currentChannel } = currentChannelFromSlice;
   const channels = useSelector(selectorsChannels.selectAll);
   const channelsNames = channels.map((chnl) => chnl.name);
   const messages = useSelector(selectorsMessages.selectAll);
   const currentMessages = messages.filter((msg) => msg.channelId === currentChannel.id);
   const messagesCount = currentMessages.filter((msg) => msg.author !== 'serviceMsg').length;
 
+  const setCurrentChannel = (args) => dispatch(updateCurrentChannel(args));
+
   useEffect(() => {
-    setCurrentChannel(defaultCurrentChannel);
+    setCurrentChannel({ status: 'init' });
 
     dispatch(dispatchData());
 
@@ -63,9 +61,16 @@ const ChatsPage = () => {
 
     socket.on('newChannel', (payload) => dispatch(addChannel(payload)));
 
-    socket.on('removeChannel', ({ id }) => dispatch(removeChannel(id)));
+    socket.on('removeChannel', ({ id }) => {
+      dispatch(removeChannel(id));
+      setCurrentChannel({ id, status: 'fromRemoveChannel' });
+    });
 
-    socket.on('renameChannel', ({ id, name }) => dispatch(renameChannel({ id, changes: { name } })));
+    // для "мгновенного" изменения названия канала в поле над сообщениями:
+    socket.on('renameChannel', ({ id, name }) => {
+      dispatch(renameChannel({ id, changes: { name } }));
+      setCurrentChannel({ id, name, status: 'fromRenameChannel' });
+    });
   }, []);
 
   useEffect(() => {
@@ -111,7 +116,7 @@ const ChatsPage = () => {
       <button
         type="button"
         className={buttonChannelClass}
-        onClick={() => setCurrentChannel({ id, name })}
+        onClick={() => setCurrentChannel({ id, name, status: 'standart' })}
         ref={id === currentChannel.id ? scrollChnlEl : null}
       >
         <span className="me-1">#</span>
@@ -131,6 +136,7 @@ const ChatsPage = () => {
               className="text-primary btn btn-group-vertical p-0 ms-1"
               onClick={() => setCurrentModal(<AddChannelModal
                 socket={socket}
+                setCurrentChannel={setCurrentChannel}
                 channelsNames={channelsNames}
               />)}
             >
