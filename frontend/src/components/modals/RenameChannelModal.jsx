@@ -17,7 +17,7 @@ const RenameChannelModal = ({
   oldName,
   channelsNames,
 }) => {
-  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal, getFormattedDate } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
@@ -37,13 +37,13 @@ const RenameChannelModal = ({
     'is-invalid': invalidForm,
   });
 
-  const makeInvalidForm = (error) => {
+  const makeInvldForm = (error) => {
     setInvalidForm(true);
 
     return (<p className="text-danger mb-1">{error}</p>);
   };
 
-  const resetInvalidForm = () => {
+  const resetInvldForm = () => {
     setInvalidForm(false);
 
     return null;
@@ -79,7 +79,12 @@ const RenameChannelModal = ({
                     if (response.status === 'ok') {
                       // для служебного сообщения о переименовании:
                       const body = `Пользователь ${username} переименовал канал: # ${oldName} -> # ${value.name}`;
-                      socket.emit('newMessage', { body, channelId: id, author: 'serviceMsg' });
+                      socket.emit('newMessage', {
+                        body,
+                        channelId: id,
+                        isService: 'msgNotice',
+                        time: getFormattedDate('time'),
+                      });
                       closeModal();
                     }
                   });
@@ -95,7 +100,7 @@ const RenameChannelModal = ({
                         </div>
                       )}
                     </Field>
-                    {errors.name && touched.name ? makeInvalidForm(errors.name) : resetInvalidForm()}
+                    {errors.name && touched.name ? makeInvldForm(errors.name) : resetInvldForm()}
                     <div className="d-flex justify-content-end">
                       <button
                         type="button"

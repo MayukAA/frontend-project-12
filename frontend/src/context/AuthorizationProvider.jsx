@@ -19,6 +19,15 @@ const AuthorizationProvider = ({ children }) => {
 
   const [currentModal, setCurrentModal] = useState(null);
 
+  const getFormattedDate = (dayOrTime) => {
+    const date = new Date();
+    const options = { day: 'numeric', month: 'long' };
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return dayOrTime === 'day' ? date.toLocaleDateString('ru-RU', options) : `${hours}:${minutes}`;
+  };
+
   return (
     <AuthorizationContext.Provider value={{
       currentUser,
@@ -26,6 +35,7 @@ const AuthorizationProvider = ({ children }) => {
       deAuthorization,
       currentModal,
       setCurrentModal,
+      getFormattedDate,
     }}>
       {children}
     </AuthorizationContext.Provider>

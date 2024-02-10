@@ -12,7 +12,7 @@ import AuthorizationContext from '../../context/AuthorizationContext';
 import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
-  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal, getFormattedDate } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
@@ -31,13 +31,13 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
     'is-invalid': invalidForm,
   });
 
-  const makeInvalidForm = (error) => {
+  const makeInvldForm = (error) => {
     setInvalidForm(true);
 
     return (<p className="text-danger mb-1">{error}</p>);
   };
 
-  const resetInvalidForm = () => {
+  const resetInvldForm = () => {
     setInvalidForm(false);
 
     return null;
@@ -72,9 +72,16 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                     if (status === 'ok') {
                       // перенос создателя канала в новый канал:
                       setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
-                      // для служебного сообщения:
+                      // для служебного сообщения - даты (число-месяц):
+                      socket.emit('newMessage', { body: getFormattedDate('day'), channelId: data.id, isService: 'msgDay' });
+                      // для служебного сообщения о создании канала:
                       const body = `Пользователь ${username} создал канал`;
-                      socket.emit('newMessage', { body, channelId: data.id, author: 'serviceMsg' });
+                      socket.emit('newMessage', {
+                        body,
+                        channelId: data.id,
+                        isService: 'msgNotice',
+                        time: getFormattedDate('time'),
+                      });
                       closeModal();
                     }
                   });
@@ -85,7 +92,7 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                     <div>
                       <Field name="name" id="name" className={formFieldClass} />
                       <label htmlFor="name" className="visually-hidden" ref={labelEl}>Имя канала</label>
-                      {errors.name && touched.name ? makeInvalidForm(errors.name) : resetInvalidForm()}
+                      {errors.name && touched.name ? makeInvldForm(errors.name) : resetInvldForm()}
                       <div className="d-flex justify-content-end">
                         <button
                           type="button"

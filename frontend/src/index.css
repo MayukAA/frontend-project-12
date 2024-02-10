@@ -19,3 +19,7 @@ code {
 .bigIcon {
   font-size: 1.2em;
 }
+
+.smallFont {
+  font-size: 0.85rem;
+}
