@@ -7,8 +7,10 @@ import {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import axios from 'axios';
+
 import AuthorizationContext from '../context/AuthorizationContext';
 import { signupSchema } from '../utils/validationSchemas';
 import routes from '../utils/routes';
@@ -19,6 +21,7 @@ const SignUpPage = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     labelEl.current.focus();
@@ -45,7 +48,6 @@ const SignUpPage = () => {
                     authorization(response.data);
                     navigate('/');
                   } catch (error) {
-                    // console.error(error);
                     setButtonDisabled(false);
                     (error.response.status === 409) && setSignUpError(true);
                   }
@@ -53,35 +55,41 @@ const SignUpPage = () => {
               >
                 {({ errors, touched }) => (
                   <Form className="w-50">
-                    <h1 className="text-center mb-4">Регистрация</h1>
+                    <h1 className="text-center mb-4">{t('registration')}</h1>
                     <div className="form-floating mb-3">
-                      <Field type="text" name="username" placeholder="Имя пользователя" id="username" className="form-control" />
-                      <label className="form-label" htmlFor="username" ref={labelEl}>Имя пользователя</label>
+                      <Field type="text" name="username" placeholder={t('signUpPage.userName')} id="username" className="form-control" />
+                      <label className="form-label" htmlFor="username" ref={labelEl}>{t('signUpPage.userName')}</label>
                       {(errors.username && touched.username) && (
-                        <p className="text-danger px-1">{errors.username}</p>
+                        <p className="text-danger px-1">{t('validUsernameOrChannelErr')}</p>
                       )}
                     </div>
                     <div className="form-floating mb-3">
-                      <Field type="password" name="password" placeholder="Пароль" id="password" className="form-control" />
-                      <label className="form-label" htmlFor="password">Пароль</label>
+                      <Field type="password" name="password" placeholder={t('password')} id="password" className="form-control" />
+                      <label className="form-label" htmlFor="password">{t('password')}</label>
                       {(errors.password && touched.password) && (
-                        <p className="text-danger px-1">{errors.password}</p>
+                        <p className="text-danger px-1">{t('signUpPage.validationPasswordErr6')}</p>
                       )}
                     </div>
                     <div className="form-floating mb-4">
-                      <Field type="password" name="passwordConf" placeholder="Подтвердите пароль" id="passwordConf" className="form-control" />
-                      <label className="form-label" htmlFor="passwordConf">Подтвердите пароль</label>
+                      <Field type="password" name="passwordConf" placeholder={t('signUpPage.passwordConfirm')} id="passwordConf" className="form-control" />
+                      <label className="form-label" htmlFor="passwordConf">{t('signUpPage.passwordConfirm')}</label>
                       {(errors.passwordConf && touched.passwordConf) && (
-                        <p className="text-danger px-1">{errors.passwordConf}</p>
+                        <p className="text-danger px-1">{t('signUpPage.passwordMatch')}</p>
                       )}
                       {signUpError && (
-                        <div className="card bg-danger text-light mt-1 p-1">Такой пользователь уже существует</div>
+                        <div className="card bg-danger text-light mt-1 p-1">{t('signUpPage.userExists')}</div>
                       )}
                     </div>
-                    <button type="submit" className="w-100 btn btn-outline-primary" disabled={buttonDisabled}>Зарегистрироваться</button>
+                    <button type="submit" className="w-100 btn btn-outline-primary" disabled={buttonDisabled}>{t('signUpPage.signUp')}</button>
                   </Form>
                 )}
               </Formik>
+            </div>
+            <div className="card-footer p-4">
+              <div className="text-center">
+                <span>{t('signUpPage.haveAccount')} </span>
+                <a href="/login">{t('signIn')}</a>
+              </div>
             </div>
           </div>
         </div>

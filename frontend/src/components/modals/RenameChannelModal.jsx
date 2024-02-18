@@ -6,6 +6,7 @@ import {
   useEffect,
   useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
@@ -17,11 +18,13 @@ const RenameChannelModal = ({
   oldName,
   channelsNames,
 }) => {
-  const { currentUser, setCurrentModal, getFormattedDate } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
+  const { t, i18n } = useTranslation();
 
+  const currentLang = i18n.language;
   const { username } = currentUser;
   const closeModal = () => setCurrentModal(null);
   const channelSchema = getModalSchema(channelsNames);
@@ -39,8 +42,9 @@ const RenameChannelModal = ({
 
   const makeInvldForm = (error) => {
     setInvalidForm(true);
+    const errorText = error === 'exists' ? t('modals.channelExists') : t('validUsernameOrChannelErr');
 
-    return (<p className="text-danger mb-1">{error}</p>);
+    return (<p className="text-danger mb-1">{errorText}</p>);
   };
 
   const resetInvldForm = () => {
@@ -49,6 +53,8 @@ const RenameChannelModal = ({
     return null;
   };
 
+  const getButtonStyle = () => (currentLang === 'ru' ? { minWidth: '6.464rem' } : { minWidth: '4.525rem' });
+
   return (
     <div>
       <div className="fade modal-backdrop show" />
@@ -56,7 +62,7 @@ const RenameChannelModal = ({
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Переименовать канал</div>
+              <div className="modal-title h4">{t('modals.renameChannel')}</div>
               <button
                 type="button"
                 aria-label="Close"
@@ -78,12 +84,11 @@ const RenameChannelModal = ({
                   socket.emit('renameChannel', value, (response) => {
                     if (response.status === 'ok') {
                       // для служебного сообщения о переименовании:
-                      const body = `Пользователь ${username} переименовал канал: # ${oldName} -> # ${value.name}`;
                       socket.emit('newMessage', {
-                        body,
                         channelId: id,
-                        isService: 'msgNotice',
-                        time: getFormattedDate('time'),
+                        isService: 'noticeRenameChannel',
+                        serviceData: { username, oldName, newName: value.name },
+                        date: new Date(),
                       });
                       closeModal();
                     }
@@ -96,7 +101,7 @@ const RenameChannelModal = ({
                       {({ field }) => (
                         <div>
                           <input name="name" id="name" className={formFieldClass} {...field} ref={inputEl} />
-                          <label htmlFor="name" className="visually-hidden">Имя канала</label>
+                          <label htmlFor="name" className="visually-hidden">{t('modals.channelName')}</label>
                         </div>
                       )}
                     </Field>
@@ -105,12 +110,20 @@ const RenameChannelModal = ({
                       <button
                         type="button"
                         className="btn btn-outline-dark me-2"
+                        style={getButtonStyle()}
                         onClick={closeModal}
                         disabled={buttonsDisabled}
                       >
-                        Отменить
+                        {t('modals.cancel')}
                       </button>
-                      <button type="submit" className="btn btn-outline-primary" disabled={buttonsDisabled}>Отправить</button>
+                      <button
+                        type="submit"
+                        className="btn btn-outline-primary"
+                        style={getButtonStyle()}
+                        disabled={buttonsDisabled}
+                      >
+                        {t('send')}
+                      </button>
                     </div>
                   </Form>
                 )}

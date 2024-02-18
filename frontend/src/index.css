@@ -17,9 +17,17 @@ code {
 }
 
 .bigIcon {
+  font-size: 1.4em;
+}
+
+.middleIcon {
   font-size: 1.2em;
 }
 
 .smallFont {
   font-size: 0.85rem;
+}
+
+.c-gray-500 {
+  color: #adb5bd;
 }

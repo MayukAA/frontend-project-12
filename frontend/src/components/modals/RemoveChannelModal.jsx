@@ -1,12 +1,15 @@
 /* eslint-disable */
 
 import { useContext, useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import AuthorizationContext from '../../context/AuthorizationContext';
 
 const RemoveChannelModal = ({ socket, id, name }) => {
   const { setCurrentModal } = useContext(AuthorizationContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const { t, i18n } = useTranslation();
 
+  const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);
 
   const emitSocket = (chnlId) => {
@@ -16,6 +19,8 @@ const RemoveChannelModal = ({ socket, id, name }) => {
     });
   };
 
+  const getButtonStyle = () => (currentLang === 'ru' ? { minWidth: '6.063rem' } : { minWidth: '5.142rem' });
+
   return (
     <div>
       <div className="fade modal-backdrop show" />
@@ -23,7 +28,11 @@ const RemoveChannelModal = ({ socket, id, name }) => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Удалить канал <b># {name}</b></div>
+              <div className="modal-title h4">
+                <Trans i18nKey="modals.removeChannel" values={{ channelName: name }}>
+                  Удалить канал <strong># {{name}}</strong>
+                </Trans>
+              </div>
               <button
                 type="button"
                 aria-label="Close"
@@ -33,23 +42,25 @@ const RemoveChannelModal = ({ socket, id, name }) => {
               />
             </div>
             <div className="modal-body">
-              <p className="lead mb-2">Уверены?</p>
+              <p className="lead mb-2">{t('modals.confirmation')}</p>
               <div className="d-flex justify-content-end">
                 <button
                   type="button"
                   className="btn btn-outline-dark me-2"
+                  style={getButtonStyle()}
                   onClick={closeModal}
                   disabled={buttonsDisabled}
                 >
-                  Отменить
+                  {t('modals.cancel')}
                 </button>
                 <button
                   type="button"
                   className="btn btn-outline-danger"
+                  style={getButtonStyle()}
                   onClick={() => emitSocket(id)}
                   disabled={buttonsDisabled}
                 >
-                  Удалить
+                  {t('remove')}
                 </button>
               </div>
             </div>

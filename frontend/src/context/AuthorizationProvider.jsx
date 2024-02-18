@@ -1,11 +1,13 @@
 /* eslint-disable */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import AuthorizationContext from './AuthorizationContext';
 
 const AuthorizationProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(currentUser ? { userName: currentUser.username } : null);
+  const { i18n } = useTranslation();
 
   const authorization = (userData) => {
     localStorage.setItem('user', JSON.stringify(userData));
@@ -19,13 +21,15 @@ const AuthorizationProvider = ({ children }) => {
 
   const [currentModal, setCurrentModal] = useState(null);
 
-  const getFormattedDate = (dayOrTime) => {
-    const date = new Date();
-    const options = { day: 'numeric', month: 'long' };
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
+  const currentLang = i18n.language;
+  localStorage.setItem('currentLanguage', currentLang);
 
-    return dayOrTime === 'day' ? date.toLocaleDateString('ru-RU', options) : `${hours}:${minutes}`;
+  const getFormattedDate = (date, dayOrTime) => {
+    const options = { day: 'numeric', month: 'long' };
+    const hours = new Date(date).getHours().toString().padStart(2, '0');
+    const minutes = new Date(date).getMinutes().toString().padStart(2, '0');
+
+    return dayOrTime === 'day' ? new Date(date).toLocaleDateString(currentLang, options) : `${hours}:${minutes}`;
   };
 
   return (

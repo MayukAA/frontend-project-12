@@ -6,17 +6,20 @@ import {
   useEffect,
   useRef,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
 import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
-  const { currentUser, setCurrentModal, getFormattedDate } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
+  const { t, i18n } = useTranslation();
 
+  const currentLang = i18n.language;
   const { username } = currentUser;
   const closeModal = () => setCurrentModal(null);
   const channelSchema = getModalSchema(channelsNames);
@@ -33,8 +36,9 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
 
   const makeInvldForm = (error) => {
     setInvalidForm(true);
+    const errorText = error === 'exists' ? t('modals.channelExists') : t('validUsernameOrChannelErr');
 
-    return (<p className="text-danger mb-1">{error}</p>);
+    return (<p className="text-danger mb-1">{errorText}</p>);
   };
 
   const resetInvldForm = () => {
@@ -43,6 +47,8 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
     return null;
   };
 
+  const getButtonStyle = () => (currentLang === 'ru' ? { minWidth: '6.464rem' } : { minWidth: '4.525rem' });
+
   return (
     <div>
       <div className="fade modal-backdrop show" />
@@ -50,7 +56,7 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <div className="modal-title h4">Добавить канал</div>
+              <div className="modal-title h4">{t('modals.addChannel')}</div>
               <button
                 type="button"
                 aria-label="Close"
@@ -73,14 +79,14 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                       // перенос создателя канала в новый канал:
                       setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
                       // для служебного сообщения - даты (число-месяц):
-                      socket.emit('newMessage', { body: getFormattedDate('day'), channelId: data.id, isService: 'msgDay' });
+                      const date = new Date();
+                      socket.emit('newMessage', { channelId: data.id, isService: 'newDay', date });
                       // для служебного сообщения о создании канала:
-                      const body = `Пользователь ${username} создал канал`;
                       socket.emit('newMessage', {
-                        body,
                         channelId: data.id,
-                        isService: 'msgNotice',
-                        time: getFormattedDate('time'),
+                        isService: 'noticeAddChnl',
+                        serviceData: { username },
+                        date: new Date(),
                       });
                       closeModal();
                     }
@@ -91,18 +97,26 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                   <Form>
                     <div>
                       <Field name="name" id="name" className={formFieldClass} />
-                      <label htmlFor="name" className="visually-hidden" ref={labelEl}>Имя канала</label>
+                      <label htmlFor="name" className="visually-hidden" ref={labelEl}>{t('modals.channelName')}</label>
                       {errors.name && touched.name ? makeInvldForm(errors.name) : resetInvldForm()}
                       <div className="d-flex justify-content-end">
                         <button
                           type="button"
                           className="btn btn-outline-dark me-2"
+                          style={getButtonStyle()}
                           onClick={closeModal}
                           disabled={buttonsDisabled}
                         >
-                          Отменить
+                          {t('modals.cancel')}
                         </button>
-                        <button type="submit" className="btn btn-outline-primary" disabled={buttonsDisabled}>Отправить</button>
+                        <button
+                          type="submit"
+                          className="btn btn-outline-primary"
+                          style={getButtonStyle()}
+                          disabled={buttonsDisabled}
+                        >
+                          {t('send')}
+                        </button>
                       </div>
                     </div>
                   </Form>

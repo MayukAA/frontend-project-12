@@ -10,14 +10,6 @@ export const loginSchema = Yup.object().shape({
     .required('Обязательное поле'),
 });
 
-export const getModalSchema = (channelsNames) => Yup.object().shape({
-  name: Yup.string()
-    .min(3, 'Минимум 3 символа')
-    .max(20, 'Максимум 20 символов')
-    .required('Обязательное поле')
-    .notOneOf(channelsNames, 'Такое название уже существует'),
-});
-
 export const signupSchema = Yup.object().shape({
   username: Yup.string()
     .min(3, 'Минимум 3 буквы')
@@ -29,4 +21,12 @@ export const signupSchema = Yup.object().shape({
   passwordConf: Yup.string()
     .oneOf([Yup.ref('password')], 'Пароли должны совпадать')
     .required('Обязательное поле'),
+});
+
+export const getModalSchema = (channelsNames) => Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Минимум 3 символа')
+    .max(20, 'Максимум 20 символов')
+    .required('Обязательное поле')
+    .notOneOf(channelsNames, 'exists'),
 });
