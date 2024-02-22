@@ -80,12 +80,14 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                       setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
                       // для служебного сообщения - даты (число-месяц):
                       const date = new Date();
-                      socket.emit('newMessage', { channelId: data.id, isService: 'newDay', date });
+                      socket.emit('newMessage', { channelId: data.id, isService: { root: 'newDay' }, date });
                       // для служебного сообщения о создании канала:
                       socket.emit('newMessage', {
                         channelId: data.id,
-                        isService: 'noticeAddChnl',
-                        serviceData: { username },
+                        isService: {
+                          root: 'noticeAddChnl',
+                          data: { username },
+                        },
                         date: new Date(),
                       });
                       closeModal();

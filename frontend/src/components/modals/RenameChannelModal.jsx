@@ -86,8 +86,10 @@ const RenameChannelModal = ({
                       // для служебного сообщения о переименовании:
                       socket.emit('newMessage', {
                         channelId: id,
-                        isService: 'noticeRenameChannel',
-                        serviceData: { username, oldName, newName: value.name },
+                        isService: {
+                          root: 'noticeRenameChannel',
+                          data: { username, oldName, newName: value.name },
+                        },
                         date: new Date(),
                       });
                       closeModal();

@@ -41,7 +41,9 @@ const Navbar = () => {
             </button>
             <ul className="dropdown-menu p-0" style={{ minWidth: '6.2rem' }}>
               <li>
-                <button type="button" className="dropdown-item rounded-1 py-2" onClick={handleLangSwitch}>{langDropdownMenu}</button>
+                <button type="button" className="dropdown-item text-center rounded-1 py-2" onClick={handleLangSwitch}>
+                  {langDropdownMenu}
+                </button>
               </li>
             </ul>
           </div>

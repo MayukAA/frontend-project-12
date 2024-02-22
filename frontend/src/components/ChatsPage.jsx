@@ -10,7 +10,13 @@ import {
   useRef,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { GoPlus, GoPaperAirplane, GoUnread } from 'react-icons/go';
+import {
+  GoPlus,
+  GoPaperAirplane,
+  GoUnread,
+  GoTrash,
+  GoPencil,
+} from 'react-icons/go';
 import { useTranslation } from 'react-i18next';
 import { Formik, Field, Form } from 'formik';
 import io from 'socket.io-client';
@@ -50,9 +56,9 @@ const ChatsPage = () => {
   const { t } = useTranslation();
 
   const { username } = currentUser;
-  const { currentChannel, unreadChannels } = useSelector((state) => state.channelsUI);
   const channels = useSelector(selectorsChannels.selectAll);
   const channelsNames = channels.map((chnl) => chnl.name);
+  const { currentChannel, unreadChannels } = useSelector((state) => state.channelsUI);
   const messages = useSelector(selectorsMessages.selectAll);
   const currentMessages = messages.filter((msg) => msg.channelId === currentChannel.id);
   const currentMessagesCount = currentMessages.filter((msg) => !msg.isService).length;
@@ -87,10 +93,7 @@ const ChatsPage = () => {
           scrollChnlEl.current.scrollIntoView({ behavior: 'smooth' });
         }
       },
-      {
-        root: channelsContainerEl.current,
-        threshold: 0.99,
-      },
+      { root: channelsContainerEl.current, threshold: 0.99 },
       );
 
       observer.observe(scrollChnlEl.current);
@@ -103,17 +106,16 @@ const ChatsPage = () => {
 
   const currDropdownClass = 'dropdown-toggle dropdown-toggle-split btn btn-dark pt-2';
   const notCurrDropdownClass = 'dropdown-toggle dropdown-toggle-split btn pt-2';
-  const ownMsgClass = 'text-break text-end mb-1';
-  const notOwnMsgClass = 'text-break mb-1';
 
   const getButtonChannel = ({ id, name }) => {
+    const isCurrentChannel = id === currentChannel.id;
     const buttonChannelClass = cn('d-flex', 'justify-content-between', 'align-items-center', 'w-100', 'text-start', 'text-truncate', 'btn', {
-      'btn-dark': id === currentChannel.id,
+      'btn-dark': isCurrentChannel,
     });
     const iconClass = cn({
-      'text-muted': id === currentChannel.id,
+      'text-muted': isCurrentChannel,
       'text-primary': unreadChannels.includes(id),
-      'c-gray-500': !unreadChannels.includes(id),
+      'c-gray-500': !unreadChannels.includes(id) && !isCurrentChannel,
     });
 
     return (
@@ -121,23 +123,22 @@ const ChatsPage = () => {
         type="button"
         className={buttonChannelClass}
         onClick={() => setCurrentChannel({ id, name, status: 'standart' })}
-        ref={id === currentChannel.id ? scrollChnlEl : null}
+        ref={isCurrentChannel ? scrollChnlEl : null}
       >
-        <span># {name}</span>
-        <GoUnread className={iconClass} />
+        <span className="text-truncate me-1"># {name}</span>
+        <GoUnread className={iconClass} style={{ minWidth: '1rem' }} />
       </button>
     );
   };
 
-  const getServiceMessage = (id, isService, serviceData, date, i) => {
-    if (isService === 'newDay') {
+  const getServiceMessage = (id, isService, date, i) => {
+    if (isService.root === 'newDay') {
+      const isToday = getFormattedDate(date, 'day') === getFormattedDate(new Date(), 'day');
+
       return (
         <small key={id}>
-          <div className="card rounded-5 bg-light text-muted text-center mx-auto mb-1" style={{ width: 'max-content' }}>
-            <span
-              className="px-3"
-              ref={getFormattedDate(date, 'day') === getFormattedDate(new Date(), 'day') ? dayEl : null}
-            >
+          <div className="card rounded-5 opacity-75 text-muted text-center mx-auto mb-2" style={{ maxWidth: 'max-content' }}>
+            <span className="px-3" ref={isToday ? dayEl : null}>
               {getFormattedDate(date, 'day')}
             </span>
           </div>
@@ -145,26 +146,68 @@ const ChatsPage = () => {
       );
     }
 
-    const { oldName, newName } = serviceData;
-    const body = isService === 'noticeAddChnl'
-      ? t('serviceMessages.addChannel', { username: serviceData.username })
-      : t('serviceMessages.renameChannel', { username: serviceData.username, oldName, newName });
+    const { data } = isService;
+    const { oldName, newName } = data;
+    const body = isService.root === 'noticeAddChnl'
+      ? t('serviceMessages.addChannel', { username: data.username })
+      : t('serviceMessages.renameChannel', { username: data.username, oldName, newName });
+    const isLastMessage = (i + 1) === currentMessages.length;
 
     return (
       <div
-        className="text-muted text-center mb-1"
-        ref={(i + 1) === currentMessages.length ? scrollMsgEl : null}
+        className="card rounded-5 opacity-75 text-muted text-center mx-auto mb-2"
+        style={{ maxWidth: 'max-content' }}
+        ref={isLastMessage ? scrollMsgEl : null}
         key={id}
       >
-        {body}
-        <span className="text-muted smallFont align-middle ms-5">{getFormattedDate(date, 'time')}</span>
+        <div className="px-3">
+          <span className="me-5">{body}</span>
+          <span className="text-muted smallFont">{getFormattedDate(date, 'time')}</span>
+        </div>
+      </div>
+    );
+  };
+
+  const getUserMessage = (body, id, author, date, i) => {
+    const isLastMessage = (i + 1) === currentMessages.length;
+    const isOwnMsg = author === username;
+    const msgPositionClass = cn('w-75', { 'ms-auto': isOwnMsg });
+    const msgCardClass = cn('card', 'rounded-3', 'mb-2', 'px-2', 'py-1', {
+      'not-own-msg-card': !isOwnMsg,
+      'own-msg-card': isOwnMsg,
+      'ms-auto': isOwnMsg,
+      'text-end': isOwnMsg,
+      'bg-dark': isOwnMsg,
+      'text-light': isOwnMsg,
+    });
+    const msgTextPositionClass = cn('m-0', { 'text-start': isOwnMsg });
+
+    return (
+      <div
+        className={msgPositionClass}
+        ref={isLastMessage ? scrollMsgEl : null}
+        key={id}
+      >
+        <div className={msgCardClass} style={{ maxWidth: 'max-content' }}>
+          <p className="m-0">
+            <b className="me-2">{author}</b>
+            <span className="text-muted smallFont m-0">{getFormattedDate(date, 'time')}</span>
+          </p>
+          <p className={msgTextPositionClass}>{body}</p>
+        </div>
       </div>
     );
   };
 
   return (
     <div className="container h-100 overflow-hidden rounded shadow my-4">
-      <div className="row h-100 bg-white flex-md-row">
+      <div
+        className="row h-100 flex-md-row"
+        style={{
+          backgroundImage: "url('https://catherineasquithgallery.com/uploads/posts/2021-02/1614383788_11-p-fon-dlya-chata-v-vk-svetlii-12.jpg')",
+          backgroundSize: 'contain',
+        }}
+      >
         <div className="col-4 col-md-2 border-end bg-light flex-column h-100 d-flex px-0">
           <div className="d-flex justify-content-between p-4 px-3 mt-1 mb-2">
             <b>{t('chatsPage.channels')}</b>
@@ -198,21 +241,24 @@ const ChatsPage = () => {
                       <button
                         type="button"
                         className="dropdown-item rounded-1"
-                        style={{ paddingBottom: '5px', paddingTop: '6px' }}
+                        style={{ paddingBottom: '5px', paddingTop: '6px', paddingLeft: '12px' }}
                         onClick={() => setCurrentModal(<RemoveChannelModal
                           socket={socket}
                           id={id}
                           name={name}
                         />)}
                       >
-                        {t('remove')}
+                        <div className="d-flex align-items-center">
+                          <GoTrash className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
+                          <span>{t('remove')}</span>
+                        </div>
                       </button>
                     </li>
                     <li>
                       <button
                         type="button"
                         className="dropdown-item rounded-1"
-                        style={{ paddingBottom: '6px', paddingTop: '5px' }}
+                        style={{ paddingBottom: '6px', paddingTop: '5px', paddingLeft: '12px' }}
                         onClick={() => setCurrentModal(<RenameChannelModal
                           socket={socket}
                           id={id}
@@ -220,7 +266,10 @@ const ChatsPage = () => {
                           channelsNames={channelsNames}
                         />)}
                       >
-                        {t('chatsPage.rename')}
+                        <div className="d-flex align-items-center">
+                          <GoPencil className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
+                          <span>{t('chatsPage.rename')}</span>
+                        </div>
                       </button>
                     </li>
                   </ul>
@@ -235,7 +284,7 @@ const ChatsPage = () => {
         </div>
         <div className="col h-100 p-0">
           <div className="d-flex flex-column h-100">
-            <div className="bg-light shadow-sm small p-3 mb-4">
+            <div className="bg-light shadow-sm small p-3 mb-3">
               <p className="m-0">
                 <b>
                   # {currentChannel.name}
@@ -245,33 +294,22 @@ const ChatsPage = () => {
                 {t('chatsPage.messagesCount.messages', { count: currentMessagesCount })}
               </span>
             </div>
-            <div id="messages-box" className="chat-messages overflow-auto px-5">
+            <div id="messages-box" className="chat-messages overflow-auto px-4">
               {(currentMessages.length > 0) && currentMessages.map(({
                 body,
                 id,
                 author,
                 isService,
-                serviceData,
                 date,
-              }, i) => (
-                isService ? getServiceMessage(id, isService, serviceData, date, i)
-                  : (
-                    <div
-                      className={author === username ? ownMsgClass : notOwnMsgClass}
-                      ref={(i + 1) === currentMessages.length ? scrollMsgEl : null}
-                      key={id}
-                    >
-                      <b>{author}</b>
-                      : {body}
-                      <p className="text-muted smallFont">{getFormattedDate(date, 'time')}</p>
-                    </div>
-                  )
+              }, i) => (isService
+                ? getServiceMessage(id, isService, date, i)
+                : getUserMessage(body, id, author, date, i)
               ))}
             </div>
-            <div className="mt-auto px-5 py-3">
+            <div className="mt-auto border-top px-5 py-3">
               <Formik
-                initialValues={{ message: '' }}
-                onSubmit={({ message }, { resetForm }) => {
+                initialValues={{ body: '' }}
+                onSubmit={({ body }, { resetForm }) => {
                   // для сообщения с новой датой:
                   const date = new Date();
                   const day = getFormattedDate(date, 'day');
@@ -280,11 +318,11 @@ const ChatsPage = () => {
                     || !dayEl.current
                     || day !== dayEl.current.innerHTML
                   ) {
-                    socket.emit('newMessage', { channelId: currentChannel.id, isService: 'newDay', date });
+                    socket.emit('newMessage', { channelId: currentChannel.id, isService: { root: 'newDay' }, date });
                   }
 
                   socket.emit('newMessage', {
-                    body: message,
+                    body,
                     channelId: currentChannel.id,
                     author: username,
                     date: new Date(),
@@ -304,13 +342,13 @@ const ChatsPage = () => {
                     {sendMessageError && <div className="card bg-danger text-light mb-1 me-2 p-1 ps-2">{t('networkError')}</div>}
                     <div className="d-flex has-validation">
                       <Field
-                        name="message"
+                        name="body"
                         aria-label={t('chatsPage.newMessage')}
                         placeholder={t('chatsPage.placeholder')}
-                        id="message"
+                        id="body"
                         className="form-control border-secondary py-1 px-2 me-2"
                       />
-                      <label htmlFor="message" ref={labelEl} />
+                      <label htmlFor="body" ref={labelEl} />
                       <button type="submit" className="text-primary btn btn-group-vertical" disabled={!dirty}>
                         <GoPaperAirplane className="middleIcon" />
                         <span className="visually-hidden">{t('send')}</span>
