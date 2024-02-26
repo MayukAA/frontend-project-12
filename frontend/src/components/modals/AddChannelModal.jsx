@@ -7,6 +7,8 @@ import {
   useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { useOnline } from '@react-hooks-library/core';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
@@ -18,6 +20,7 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
   const { t, i18n } = useTranslation();
+  const isOnline = useOnline();
 
   const currentLang = i18n.language;
   const { username } = currentUser;
@@ -75,13 +78,14 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                 onSubmit={(value) => {
                   setButtonsDisabled(true);
                   socket.emit('newChannel', value, ({ status, data }) => {
-                    if (status === 'ok') {
+                    if (status === 'ok' && isOnline) {
+                      toast.success(t('modals.channelCreated', { channelName: data.name }));
                       // перенос создателя канала в новый канал:
                       setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
-                      // для служебного сообщения - даты (число-месяц):
+                      // служебное сообщение - дата (число-месяц):
                       const date = new Date();
                       socket.emit('newMessage', { channelId: data.id, isService: { root: 'newDay' }, date });
-                      // для служебного сообщения о создании канала:
+                      // служебное сообщение о создании канала:
                       socket.emit('newMessage', {
                         channelId: data.id,
                         isService: {

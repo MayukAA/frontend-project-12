@@ -18,6 +18,8 @@ import {
   GoPencil,
 } from 'react-icons/go';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { useOnline } from '@react-hooks-library/core';
 import { Formik, Field, Form } from 'formik';
 import io from 'socket.io-client';
 import cn from 'classnames';
@@ -46,14 +48,16 @@ const ChatsPage = () => {
     setCurrentModal,
     getFormattedDate,
   } = useContext(AuthorizationContext);
-  const [sendMessageError, setSendMessageError] = useState(false);
   const dispatch = useDispatch();
+  const [prevConnectionState, setPrevConnectionState] = useState(false);
   const labelEl = useRef();
   const channelsContainerEl = useRef();
   const scrollChnlEl = useRef();
   const scrollMsgEl = useRef();
   const dayEl = useRef();
+  const toastEl = useRef();
   const { t } = useTranslation();
+  const isOnline = useOnline();
 
   const { username } = currentUser;
   const channels = useSelector(selectorsChannels.selectAll);
@@ -68,7 +72,7 @@ const ChatsPage = () => {
 
   useEffect(() => {
     setCurrentChannel({ status: 'init' });
-    dispatch(dispatchData());
+    dispatch(dispatchData(t));
     socket.on('newMessage', (payload) => dispatch(addMessage(payload)));
     socket.on('newChannel', (payload) => dispatch(addChannel(payload)));
     socket.on('removeChannel', ({ id }) => dispatch(removeChannel(id)));
@@ -78,11 +82,11 @@ const ChatsPage = () => {
   useEffect(() => {
     labelEl.current.focus();
 
-    // для исправления бага с незакрывающимся dropdown;
+    // исправление бага с незакрывающимся dropdown;
     const dropdownUlEl = document.querySelector('.dropdown-menu.show');
     if (dropdownUlEl) dropdownUlEl.classList.remove('show');
 
-    // для удаления значка непрочитанного сообщения;
+    // удаление значка непрочитанного сообщения;
     dispatch(resetUnreadChannel(currentChannel.id));
   }, [currentChannel]);
 
@@ -103,6 +107,15 @@ const ChatsPage = () => {
   useEffect(() => {
     if (scrollMsgEl.current) scrollMsgEl.current.scrollIntoView({ behavior: 'smooth' });
   }, [currentMessages]);
+
+  useEffect(() => {
+    if (!isOnline && prevConnectionState) {
+      toastEl.current = toast.error(t('noInternetConnection'), { autoClose: false });
+    }
+    if (isOnline) toast.dismiss(toastEl.current);
+
+    setPrevConnectionState(isOnline);
+  }, [isOnline]);
 
   const currDropdownClass = 'dropdown-toggle dropdown-toggle-split btn btn-dark pt-2';
   const notCurrDropdownClass = 'dropdown-toggle dropdown-toggle-split btn pt-2';
@@ -310,7 +323,7 @@ const ChatsPage = () => {
               <Formik
                 initialValues={{ body: '' }}
                 onSubmit={({ body }, { resetForm }) => {
-                  // для сообщения с новой датой:
+                  // сообщение с новой датой:
                   const date = new Date();
                   const day = getFormattedDate(date, 'day');
                   if (
@@ -327,19 +340,14 @@ const ChatsPage = () => {
                     author: username,
                     date: new Date(),
                   }, ({ status }) => {
-                    if (status === 'ok') {
-                      setSendMessageError(false);
-                      resetForm();
-                    } else {
-                      setSendMessageError(true);
-                    }
+                    status === 'ok' ? resetForm() : toast.error(t('networkError'));
                   });
+
                   labelEl.current.focus();
                 }}
               >
                 {({ dirty }) => (
                   <Form className="py-1">
-                    {sendMessageError && <div className="card bg-danger text-light mb-1 me-2 p-1 ps-2">{t('networkError')}</div>}
                     <div className="d-flex has-validation">
                       <Field
                         name="body"

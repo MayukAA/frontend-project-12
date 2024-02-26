@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 import axios from 'axios';
 
@@ -40,16 +41,17 @@ const SignUpPage = () => {
                 validateOnBlur={false}
                 validateOnSubmit
                 onSubmit={async (values) => {
+                  const { username, password } = values;
                   setSignUpError(false);
                   setButtonDisabled(true);
-                  const { username, password } = values;
                   try {
                     const response = await axios.post(routes.signupPath(), { username, password });
                     authorization(response.data);
                     navigate('/');
                   } catch (error) {
                     setButtonDisabled(false);
-                    (error.response.status === 409) && setSignUpError(true);
+                    if (error.message === 'Network Error') toast.error(t('networkError'));
+                    else if (error.response.status === 409) setSignUpError(true);
                   }
                 }}
               >

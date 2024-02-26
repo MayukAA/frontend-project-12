@@ -7,6 +7,8 @@ export default {
     registration: 'Регистрация',
     validUsernameOrChannelErr: 'От 3 до 20 символов',
     networkError: 'Ошибка соединения',
+    dataLoadingError: 'Ошибка загрузки данных',
+    noInternetConnection: 'Ожидание сети...',
     send: 'Отправить',
     remove: 'Удалить',
     languages: {
@@ -45,10 +47,13 @@ export default {
     modals: {
       cancel: 'Отменить',
       addChannel: 'Добавить канал',
+      channelCreated: 'Канал # {{channelName}} создан',
       channelName: 'Имя канала',
       removeChannel: 'Удалить канал <1># {{channelName}}</1>',
+      channelRemoved: 'Канал # {{channelName}} удален',
       confirmation: 'Уверены?',
       renameChannel: 'Переименовать канал',
+      channelRenamed: 'Канал переименован: # {{oldName}} > # {{newName}}',
       channelExists: 'Такое название уже существует',
     },
     serviceMessages: {

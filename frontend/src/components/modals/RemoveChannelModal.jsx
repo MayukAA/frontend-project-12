@@ -2,21 +2,28 @@
 
 import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { useOnline } from '@react-hooks-library/core';
 import AuthorizationContext from '../../context/AuthorizationContext';
 
 const RemoveChannelModal = ({ socket, id, name }) => {
   const { setCurrentModal } = useContext(AuthorizationContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { t, i18n } = useTranslation();
+  const isOnline = useOnline();
 
   const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);
 
   const emitSocket = (chnlId) => {
     setButtonsDisabled(true);
-    socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
-      if (status === 'ok') closeModal();
-    });
+
+    if (isOnline) {
+      toast.info(t('modals.channelRemoved', { channelName: name }));
+      socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
+        if (status === 'ok') closeModal();
+      });
+    }
   };
 
   const getButtonStyle = () => (currentLang === 'ru' ? { minWidth: '6.063rem' } : { minWidth: '5.142rem' });

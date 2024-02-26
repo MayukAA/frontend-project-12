@@ -7,6 +7,8 @@ export default {
     registration: 'Signup',
     validUsernameOrChannelErr: 'Must be 3 to 20 characters',
     networkError: 'Network Error',
+    dataLoadingError: 'Data loading error',
+    noInternetConnection: 'Waiting for network...',
     send: 'Send',
     remove: 'Remove',
     languages: {
@@ -44,10 +46,13 @@ export default {
     modals: {
       cancel: 'Cancel',
       addChannel: 'Add channel',
+      channelCreated: 'Channel # {{channelName}} created',
       channelName: 'Channel name',
       removeChannel: 'Remove channel <1># {{channelName}}</1>',
+      channelRemoved: 'Channel # {{channelName}} removed',
       confirmation: 'Are you sure?',
       renameChannel: 'Rename channel',
+      channelRenamed: 'Channel renamed: # {{oldName}} > # {{newName}}',
       channelExists: 'Such a name already exists',
     },
     serviceMessages: {

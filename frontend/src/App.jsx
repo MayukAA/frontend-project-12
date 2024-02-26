@@ -7,6 +7,9 @@ import {
   Navigate,
 } from 'react-router-dom';
 import './App.css';
+import { ToastContainer, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import AuthorizationProvider from './context/AuthorizationProvider';
 import Navbar from './components/Navbar';
 import ChatsPage from './components/ChatsPage';
@@ -31,6 +34,19 @@ const App = () => (
         <Route path={routes.signupPagePath()} element={<SignUpPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <ToastContainer
+        position="top-center"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Slide}
+      />
     </BrowserRouter>
   </AuthorizationProvider>
 );

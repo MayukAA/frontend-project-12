@@ -7,6 +7,8 @@ import {
   useRef,
 } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { useOnline } from '@react-hooks-library/core';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 import AuthorizationContext from '../../context/AuthorizationContext';
@@ -23,6 +25,7 @@ const RenameChannelModal = ({
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
   const { t, i18n } = useTranslation();
+  const isOnline = useOnline();
 
   const currentLang = i18n.language;
   const { username } = currentUser;
@@ -81,9 +84,10 @@ const RenameChannelModal = ({
                 onSubmit={(value) => {
                   value.id = id;
                   setButtonsDisabled(true);
-                  socket.emit('renameChannel', value, (response) => {
-                    if (response.status === 'ok') {
-                      // для служебного сообщения о переименовании:
+                  socket.emit('renameChannel', value, ({ status }) => {
+                    if (status === 'ok' && isOnline) {
+                      toast.success(t('modals.channelRenamed', { oldName, newName: value.name }));
+                      // cлужебноe сообщениe о переименовании:
                       socket.emit('newMessage', {
                         channelId: id,
                         isService: {

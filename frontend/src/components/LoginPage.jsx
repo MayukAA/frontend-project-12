@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 
 import AuthorizationContext from '../context/AuthorizationContext';
@@ -21,7 +22,6 @@ import routes from '../utils/routes';
 const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
   const [authorizationError, setAuthError] = useState(false);
-  const [networkError, setNetworkError] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
   const navigate = useNavigate();
@@ -31,13 +31,10 @@ const LoginPage = () => {
     labelEl.current.focus();
   }, []);
 
-  const formFieldClass = cn('form-control', {
-    'is-invalid': authorizationError,
-  });
+  const formFieldClass = cn('form-control', { 'is-invalid': authorizationError });
 
   return (
     <div className="h-100">
-      {networkError && <div className="alert alert-danger" role="alert">{t('networkError')}</div>}
       <div className="container-fluid h-100">
         <div className="row justify-content-center align-content-center h-100">
           <div className="col-12 col-md-8 col-xxl-6">
@@ -51,7 +48,6 @@ const LoginPage = () => {
                   validateOnSubmit
                   onSubmit={async (values) => {
                     setAuthError(false);
-                    setNetworkError(false);
                     setButtonDisabled(true);
                     try {
                       const response = await axios.post(routes.loginPath(), values);
@@ -59,7 +55,8 @@ const LoginPage = () => {
                       navigate('/');
                     } catch (error) {
                       setButtonDisabled(false);
-                      error.response.status === 401 ? setAuthError(true) : setNetworkError(true);
+                      if (error.message === 'Network Error') toast.error(t('networkError'));
+                      else if (error.response.status === 401) setAuthError(true);
                     }
                   }}
                 >
