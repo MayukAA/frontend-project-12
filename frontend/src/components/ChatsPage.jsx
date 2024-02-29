@@ -3,12 +3,7 @@
 import '../styles.scss';
 import '../index.css';
 import 'bootstrap';
-import {
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   GoPlus,
@@ -19,7 +14,6 @@ import {
 } from 'react-icons/go';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { useOnline } from '@react-hooks-library/core';
 import { Formik, Field, Form } from 'formik';
 import io from 'socket.io-client';
 import cn from 'classnames';
@@ -39,7 +33,9 @@ import RemoveChannelModal from './modals/RemoveChannelModal';
 import RenameChannelModal from './modals/RenameChannelModal';
 
 // const socket = io('ws://localhost:3000');
+// const checkUrl = 'http://localhost:3000/';
 const socket = io('wss://hexlet-chat-spn2.onrender.com');
+const checkUrl = 'https://hexlet-chat-spn2.onrender.com/';
 
 const ChatsPage = () => {
   const {
@@ -49,15 +45,12 @@ const ChatsPage = () => {
     getFormattedDate,
   } = useContext(AuthorizationContext);
   const dispatch = useDispatch();
-  const [prevConnectionState, setPrevConnectionState] = useState(false);
   const labelEl = useRef();
   const channelsContainerEl = useRef();
   const scrollChnlEl = useRef();
   const scrollMsgEl = useRef();
   const dayEl = useRef();
-  const toastEl = useRef();
   const { t } = useTranslation();
-  const isOnline = useOnline();
 
   const { username } = currentUser;
   const channels = useSelector(selectorsChannels.selectAll);
@@ -70,6 +63,17 @@ const ChatsPage = () => {
   const setCurrentChannel = (args) => dispatch(updateCurrentChannel(args));
   localStorage.setItem('unreadChannels', unreadChannels);
 
+  const checkConnection = async () => {
+    try {
+      await fetch(checkUrl);
+      if (toast.isActive('customId')) toast.dismiss('customId');
+    } catch (err) {
+      if (!toast.isActive('customId')) {
+        toast.error(t('noInternetConnection'), { toastId: 'customId', autoClose: false });
+      }
+    }
+  };
+
   useEffect(() => {
     setCurrentChannel({ status: 'init' });
     dispatch(dispatchData(t));
@@ -77,6 +81,11 @@ const ChatsPage = () => {
     socket.on('newChannel', (payload) => dispatch(addChannel(payload)));
     socket.on('removeChannel', ({ id }) => dispatch(removeChannel(id)));
     socket.on('renameChannel', ({ id, name }) => dispatch(renameChannel({ id, changes: { name } })));
+
+    checkConnection();
+    const intervalId = setInterval(() => checkConnection(), 5000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -108,17 +117,8 @@ const ChatsPage = () => {
     if (scrollMsgEl.current) scrollMsgEl.current.scrollIntoView({ behavior: 'smooth' });
   }, [currentMessages]);
 
-  useEffect(() => {
-    if (!isOnline && prevConnectionState) {
-      toastEl.current = toast.error(t('noInternetConnection'), { autoClose: false });
-    }
-    if (isOnline) toast.dismiss(toastEl.current);
-
-    setPrevConnectionState(isOnline);
-  }, [isOnline]);
-
-  const currDropdownClass = 'dropdown-toggle dropdown-toggle-split btn btn-dark pt-2';
-  const notCurrDropdownClass = 'dropdown-toggle dropdown-toggle-split btn pt-2';
+  const currDropdownCls = 'dropdown-toggle dropdown-toggle-split btn btn-dark pt-2';
+  const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split btn pt-2';
 
   const getButtonChannel = ({ id, name }) => {
     const isCurrentChannel = id === currentChannel.id;
@@ -238,61 +238,63 @@ const ChatsPage = () => {
             </button>
           </div>
           <ul id="channels-box" className="nav flex-column nav-pills nav-fill overflow-auto h-100 d-block px-2 mb-3" ref={channelsContainerEl}>
-            {channels.map(({ id, name, removable }) => (removable ? (
-              <li className="nav-item w-100" key={id}>
-                <div role="group" className="d-flex dropdown btn-group">
+            {channels.map(({ id, name, removable }) => (removable
+              ? (
+                <li className="nav-item w-100" key={id}>
+                  <div role="group" className="d-flex dropdown btn-group">
+                    {getButtonChannel({ id, name })}
+                    <button
+                      type="button"
+                      className={id === currentChannel.id ? currDropdownCls : notCurrDropdownCls}
+                      data-bs-toggle="dropdown"
+                    >
+                      <span className="visually-hidden">{t('chatsPage.management')}</span>
+                    </button>
+                    <ul className="dropdown-menu p-0" style={{ minWidth: '9rem' }}>
+                      <li>
+                        <button
+                          type="button"
+                          className="dropdown-item rounded-1"
+                          style={{ paddingBottom: '5px', paddingTop: '6px', paddingLeft: '12px' }}
+                          onClick={() => setCurrentModal(<RemoveChannelModal
+                            socket={socket}
+                            id={id}
+                            name={name}
+                          />)}
+                        >
+                          <div className="d-flex align-items-center">
+                            <GoTrash className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
+                            <span>{t('remove')}</span>
+                          </div>
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          type="button"
+                          className="dropdown-item rounded-1"
+                          style={{ paddingBottom: '6px', paddingTop: '5px', paddingLeft: '12px' }}
+                          onClick={() => setCurrentModal(<RenameChannelModal
+                            socket={socket}
+                            id={id}
+                            oldName={name}
+                            channelsNames={channelsNames}
+                          />)}
+                        >
+                          <div className="d-flex align-items-center">
+                            <GoPencil className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
+                            <span>{t('chatsPage.rename')}</span>
+                          </div>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              ) : (
+                <li className="nav-item w-100" key={id}>
                   {getButtonChannel({ id, name })}
-                  <button
-                    type="button"
-                    className={id === currentChannel.id ? currDropdownClass : notCurrDropdownClass}
-                    data-bs-toggle="dropdown"
-                  >
-                    <span className="visually-hidden">{t('chatsPage.management')}</span>
-                  </button>
-                  <ul className="dropdown-menu p-0" style={{ minWidth: '9rem' }}>
-                    <li>
-                      <button
-                        type="button"
-                        className="dropdown-item rounded-1"
-                        style={{ paddingBottom: '5px', paddingTop: '6px', paddingLeft: '12px' }}
-                        onClick={() => setCurrentModal(<RemoveChannelModal
-                          socket={socket}
-                          id={id}
-                          name={name}
-                        />)}
-                      >
-                        <div className="d-flex align-items-center">
-                          <GoTrash className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
-                          <span>{t('remove')}</span>
-                        </div>
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        type="button"
-                        className="dropdown-item rounded-1"
-                        style={{ paddingBottom: '6px', paddingTop: '5px', paddingLeft: '12px' }}
-                        onClick={() => setCurrentModal(<RenameChannelModal
-                          socket={socket}
-                          id={id}
-                          oldName={name}
-                          channelsNames={channelsNames}
-                        />)}
-                      >
-                        <div className="d-flex align-items-center">
-                          <GoPencil className="text-muted me-2" style={{ paddingTop: '1px', minWidth: '1.15rem', minHeight: '1.15rem' }} />
-                          <span>{t('chatsPage.rename')}</span>
-                        </div>
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </li>
-            ) : (
-              <li className="nav-item w-100" key={id}>
-                {getButtonChannel({ id, name })}
-              </li>
-            )))}
+                </li>
+              )
+            ))}
           </ul>
         </div>
         <div className="col h-100 p-0">

@@ -47,13 +47,13 @@ export default {
     modals: {
       cancel: 'Отменить',
       addChannel: 'Добавить канал',
-      channelCreated: 'Канал # {{channelName}} создан',
+      channelCreated: 'Канал создан',
       channelName: 'Имя канала',
       removeChannel: 'Удалить канал <1># {{channelName}}</1>',
       channelRemoved: 'Канал # {{channelName}} удален',
       confirmation: 'Уверены?',
       renameChannel: 'Переименовать канал',
-      channelRenamed: 'Канал переименован: # {{oldName}} > # {{newName}}',
+      channelRenamed: 'Канал переименован',
       channelExists: 'Такое название уже существует',
     },
     serviceMessages: {

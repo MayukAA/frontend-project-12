@@ -4,7 +4,6 @@
   "private": true,
   "proxy": "http://localhost:5001",
   "dependencies": {
-    "@react-hooks-library/core": "^0.6.0",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^1.6.2",
     "bootstrap": "^5.2.0",

@@ -46,13 +46,13 @@ export default {
     modals: {
       cancel: 'Cancel',
       addChannel: 'Add channel',
-      channelCreated: 'Channel # {{channelName}} created',
+      channelCreated: 'Channel created',
       channelName: 'Channel name',
       removeChannel: 'Remove channel <1># {{channelName}}</1>',
       channelRemoved: 'Channel # {{channelName}} removed',
       confirmation: 'Are you sure?',
       renameChannel: 'Rename channel',
-      channelRenamed: 'Channel renamed: # {{oldName}} > # {{newName}}',
+      channelRenamed: 'Channel renamed',
       channelExists: 'Such a name already exists',
     },
     serviceMessages: {
