@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import AuthorizationContext from '../../context/AuthorizationContext';
 
 const RemoveChannelModal = ({ socket, id, name }) => {
-  const { setCurrentModal } = useContext(AuthorizationContext);
+  const { setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { t, i18n } = useTranslation();
 
@@ -16,9 +16,11 @@ const RemoveChannelModal = ({ socket, id, name }) => {
   const emitSocket = (chnlId) => {
     setButtonsDisabled(true);
 
-    toast.info(t('modals.channelRemoved', { channelName: name }));
     socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
-      if (status === 'ok') closeModal();
+      if (status === 'ok') {
+        closeModal();
+        toast.info(t('modals.channelRemoved', { channelName: name }));
+      }
     });
   };
 
@@ -61,7 +63,7 @@ const RemoveChannelModal = ({ socket, id, name }) => {
                   className="btn btn-outline-danger"
                   style={getButtonStyle()}
                   onClick={() => emitSocket(id)}
-                  disabled={buttonsDisabled}
+                  disabled={buttonsDisabled || btnDisabledNetworkWait}
                 >
                   {t('remove')}
                 </button>

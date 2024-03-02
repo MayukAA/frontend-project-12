@@ -14,7 +14,7 @@ import AuthorizationContext from '../../context/AuthorizationContext';
 import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
-  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const labelEl = useRef();
@@ -117,7 +117,7 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                           type="submit"
                           className="btn btn-outline-primary"
                           style={getButtonStyle()}
-                          disabled={buttonsDisabled}
+                          disabled={buttonsDisabled || btnDisabledNetworkWait}
                         >
                           {t('send')}
                         </button>

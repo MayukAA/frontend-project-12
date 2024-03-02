@@ -9,6 +9,7 @@ import {
   GoPlus,
   GoPaperAirplane,
   GoUnread,
+  GoMail,
   GoTrash,
   GoPencil,
 } from 'react-icons/go';
@@ -42,6 +43,8 @@ const ChatsPage = () => {
     currentUser,
     currentModal,
     setCurrentModal,
+    btnDisabledNetworkWait,
+    setBtnDisabledNetworkWait,
     getFormattedDate,
   } = useContext(AuthorizationContext);
   const dispatch = useDispatch();
@@ -67,10 +70,12 @@ const ChatsPage = () => {
     try {
       await fetch(checkUrl);
       if (toast.isActive('customId')) toast.dismiss('customId');
+      setBtnDisabledNetworkWait(false);
     } catch (err) {
       if (!toast.isActive('customId')) {
         toast.error(t('noInternetConnection'), { toastId: 'customId', autoClose: false });
       }
+      setBtnDisabledNetworkWait(true);
     }
   };
 
@@ -117,18 +122,13 @@ const ChatsPage = () => {
     if (scrollMsgEl.current) scrollMsgEl.current.scrollIntoView({ behavior: 'smooth' });
   }, [currentMessages]);
 
-  const currDropdownCls = 'dropdown-toggle dropdown-toggle-split btn btn-dark pt-2';
-  const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split btn pt-2';
+  const currDropdownCls = 'dropdown-toggle dropdown-toggle-split btn-chnl btn btn-dark pt-2';
+  const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split btn-chnl btn pt-2';
 
   const getButtonChannel = ({ id, name }) => {
     const isCurrentChannel = id === currentChannel.id;
-    const buttonChannelClass = cn('d-flex', 'justify-content-between', 'align-items-center', 'w-100', 'text-start', 'text-truncate', 'btn', {
+    const buttonChannelClass = cn('d-flex', 'justify-content-between', 'align-items-center', 'w-100', 'text-start', 'text-truncate', 'btn-chnl', 'btn', {
       'btn-dark': isCurrentChannel,
-    });
-    const iconClass = cn({
-      'text-muted': isCurrentChannel,
-      'text-primary': unreadChannels.includes(id),
-      'c-gray-500': !unreadChannels.includes(id) && !isCurrentChannel,
     });
 
     return (
@@ -139,7 +139,9 @@ const ChatsPage = () => {
         ref={isCurrentChannel ? scrollChnlEl : null}
       >
         <span className="text-truncate me-1"># {name}</span>
-        <GoUnread className={iconClass} style={{ minWidth: '1rem' }} />
+        {unreadChannels.includes(id)
+          ? <GoUnread className="text-dark" style={{ minWidth: '1rem' }} />
+          : <GoMail className={isCurrentChannel ? 'text-muted' : 'c-gray-500'} style={{ minWidth: '1rem' }} />}
       </button>
     );
   };
@@ -359,7 +361,7 @@ const ChatsPage = () => {
                         className="form-control border-secondary py-1 px-2 me-2"
                       />
                       <label htmlFor="body" ref={labelEl} />
-                      <button type="submit" className="text-primary btn btn-group-vertical" disabled={!dirty}>
+                      <button type="submit" className="text-primary btn btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>
                         <GoPaperAirplane className="middleIcon" />
                         <span className="visually-hidden">{t('send')}</span>
                       </button>

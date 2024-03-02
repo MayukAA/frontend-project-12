@@ -19,7 +19,7 @@ const RenameChannelModal = ({
   oldName,
   channelsNames,
 }) => {
-  const { currentUser, setCurrentModal } = useContext(AuthorizationContext);
+  const { currentUser, setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
@@ -124,7 +124,7 @@ const RenameChannelModal = ({
                         type="submit"
                         className="btn btn-outline-primary"
                         style={getButtonStyle()}
-                        disabled={buttonsDisabled}
+                        disabled={buttonsDisabled || btnDisabledNetworkWait}
                       >
                         {t('send')}
                       </button>
