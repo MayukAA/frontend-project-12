@@ -101,10 +101,26 @@ code {
   border-color: #212529 !important;
 }
 
+.hov-opac-75:hover {
+  opacity: 0.75;
+}
+
 [role=group] > .btn:focus {
   border-color: #adb5bd !important;
 }
 
 [role=group] > .btn-dark:focus {
   border-color: #212529 !important;
+}
+
+.btn-msg-menu {
+  position: absolute;
+  top: 50%;
+  right: -39px;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+
+.w-75:hover .btn-msg-menu {
+  opacity: 1;
 }

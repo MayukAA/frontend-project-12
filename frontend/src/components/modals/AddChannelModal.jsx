@@ -87,7 +87,7 @@ const AddChannelModal = ({ socket, setCurrentChannel, channelsNames }) => {
                       socket.emit('newMessage', {
                         channelId: data.id,
                         isService: {
-                          root: 'noticeAddChnl',
+                          root: 'noticeAddChannel',
                           data: { username },
                         },
                         date: new Date(),

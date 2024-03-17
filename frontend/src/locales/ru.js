@@ -32,10 +32,14 @@ export default {
       userExists: 'Такой пользователь уже существует',
     },
     chatsPage: {
+      messageDeleted: 'сообщение удалено',
       management: 'Управление каналом',
       rename: 'Переименовать',
       channels: 'Каналы',
       newMessage: 'Новое сообщение',
+      edit: 'Редактировать',
+      edited: 'изменено',
+      editMessage: 'Редактирование сообщения',
       placeholder: 'Введите сообщение...',
       messagesCount: {
         messages_zero: '{{count}} сообщений',
@@ -51,6 +55,8 @@ export default {
       channelName: 'Имя канала',
       removeChannel: 'Удалить канал <1># {{channelName}}</1>',
       channelRemoved: 'Канал # {{channelName}} удален',
+      removeMessage: 'Удалить сообщение',
+      messageRemoved: 'Сообщение удалено',
       confirmation: 'Уверены?',
       renameChannel: 'Переименовать канал',
       channelRenamed: 'Канал переименован',

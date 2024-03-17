@@ -32,10 +32,14 @@ export default {
       userExists: 'Username already taken',
     },
     chatsPage: {
+      messageDeleted: 'message deleted',
       management: 'Channel control',
       rename: 'Rename',
       channels: 'Channels',
       newMessage: 'New Message',
+      edit: 'Edit',
+      edited: 'edited',
+      editMessage: 'Edit message',
       placeholder: 'Your message...',
       messagesCount: {
         messages_zero: '{{count}} message',
@@ -50,6 +54,8 @@ export default {
       channelName: 'Channel name',
       removeChannel: 'Remove channel <1># {{channelName}}</1>',
       channelRemoved: 'Channel # {{channelName}} removed',
+      removeMessage: 'Remove message',
+      messageRemoved: 'Message removed',
       confirmation: 'Are you sure?',
       renameChannel: 'Rename channel',
       channelRenamed: 'Channel renamed',
