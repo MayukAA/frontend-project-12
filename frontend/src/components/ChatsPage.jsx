@@ -43,10 +43,10 @@ import RemoveChannelModal from './modals/RemoveChannelModal';
 import RenameChannelModal from './modals/RenameChannelModal';
 import RemoveMessageModal from './modals/RemoveMessageModal';
 
-const socket = io('ws://localhost:3000');
-const checkUrl = 'http://localhost:3000/';
-// const socket = io('wss://hexlet-chat-spn2.onrender.com');
-// const checkUrl = 'https://hexlet-chat-spn2.onrender.com/';
+// const socket = io('ws://localhost:3000');
+// const checkUrl = 'http://localhost:3000/';
+const socket = io('wss://hexlet-chat-spn2.onrender.com');
+const checkUrl = 'https://hexlet-chat-spn2.onrender.com/';
 const urlToBackground = 'https://catherineasquithgallery.com/uploads/posts/2021-02/1614383788_11-p-fon-dlya-chata-v-vk-svetlii-12.jpg';
 
 const ChatsPage = () => {
