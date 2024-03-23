@@ -32,6 +32,12 @@ code {
   color: #adb5bd;
 }
 
+.menu-svg {
+  padding-top: 1px;
+  min-width: 1.15rem;
+  min-height: 1.15rem;
+}
+
 .own-msg-card::after {
   content: '';
   position: absolute;
@@ -68,7 +74,7 @@ code {
 }
 
 .Toastify__close-button--light {
-  opacity: 0.7 !important;
+  opacity: 0.65 !important;
 }
 
 .Toastify__close-button--light:hover {

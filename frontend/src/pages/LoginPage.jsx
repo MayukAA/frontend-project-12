@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import '../styles.scss';
 import 'bootstrap';
 import axios from 'axios';
@@ -11,21 +9,21 @@ import {
   useState,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 
 import AuthorizationContext from '../context/AuthorizationContext';
+import UtilsContext from '../context/UtilsContext';
 import { loginSchema } from '../utils/validationSchemas';
 import routes from '../utils/routes';
 
 const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
+  const { t } = useContext(UtilsContext);
   const [authorizationError, setAuthError] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   useEffect(() => {
     labelEl.current.focus();
@@ -87,7 +85,10 @@ const LoginPage = () => {
               </div>
               <div className="card-footer p-4">
                 <div className="text-center">
-                  <span>{t('loginPage.noAccount')} </span>
+                  <span>
+                    {t('loginPage.noAccount')}
+                    {' '}
+                  </span>
                   <a href="/signup">{t('registration')}</a>
                 </div>
               </div>

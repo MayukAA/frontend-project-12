@@ -3,16 +3,14 @@
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import AuthorizationContext from '../../context/AuthorizationContext';
+import UtilsContext from '../../context/UtilsContext';
+import StateContext from '../../context/StateContext';
 
-const RemoveMessageModal = ({
-  socket,
-  id,
-  currentChannelId,
-}) => {
-  const { setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
+const RemoveMessageModal = ({ id, currentChannelId }) => {
+  const { socket, t } = useContext(UtilsContext);
+  const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);

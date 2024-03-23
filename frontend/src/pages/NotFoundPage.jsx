@@ -1,9 +1,10 @@
 import '../styles.scss';
 import 'bootstrap';
-import { useTranslation } from 'react-i18next';
+import { useContext } from 'react';
+import UtilsContext from '../context/UtilsContext';
 
 const NotFoundPage = () => {
-  const { t } = useTranslation();
+  const { t } = useContext(UtilsContext);
 
   return (
     <div className="text-center mt-4">

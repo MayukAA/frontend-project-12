@@ -3,12 +3,14 @@
 import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { toast } from 'react-toastify';
-import AuthorizationContext from '../../context/AuthorizationContext';
+import UtilsContext from '../../context/UtilsContext';
+import StateContext from '../../context/StateContext';
 
-const RemoveChannelModal = ({ socket, id, name }) => {
-  const { setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
+const RemoveChannelModal = ({ id, name }) => {
+  const { socket, t } = useContext(UtilsContext);
+  const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);
@@ -35,7 +37,11 @@ const RemoveChannelModal = ({ socket, id, name }) => {
             <div className="modal-header">
               <div className="modal-title h4">
                 <Trans i18nKey="modals.removeChannel" values={{ channelName: name }}>
-                  Удалить канал <strong># {{name}}</strong>
+                  {'Удалить канал '}
+                  <strong>
+                    {'# '}
+                    {{ name }}
+                  </strong>
                 </Trans>
               </div>
               <button

@@ -10,12 +10,12 @@ import './App.css';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import AuthorizationProvider from './context/AuthorizationProvider';
+import AppProvider from './context/AppProvider';
 import Navbar from './components/Navbar';
-import ChatsPage from './components/ChatsPage';
-import NotFoundPage from './components/NotFoundPage';
-import LoginPage from './components/LoginPage';
-import SignUpPage from './components/SignUpPage';
+import ChatsPage from './pages/ChatsPage';
+import NotFoundPage from './pages/NotFoundPage';
+import LoginPage from './pages/LoginPage';
+import SignUpPage from './pages/SignUpPage';
 import routes from './utils/routes';
 
 const IsAuthorization = () => {
@@ -25,7 +25,7 @@ const IsAuthorization = () => {
 };
 
 const App = () => (
-  <AuthorizationProvider>
+  <AppProvider>
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -48,7 +48,7 @@ const App = () => (
         transition={Slide}
       />
     </BrowserRouter>
-  </AuthorizationProvider>
+  </AppProvider>
 );
 
 export default App;

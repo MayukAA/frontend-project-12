@@ -10,20 +10,20 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
+
 import AuthorizationContext from '../../context/AuthorizationContext';
+import UtilsContext from '../../context/UtilsContext';
+import StateContext from '../../context/StateContext';
 import { getModalSchema } from '../../utils/validationSchemas';
 
-const RenameChannelModal = ({
-  socket,
-  id,
-  oldName,
-  channelsNames,
-}) => {
-  const { currentUser, setCurrentModal, btnDisabledNetworkWait } = useContext(AuthorizationContext);
+const RenameChannelModal = ({ id, oldName, channelsNames }) => {
+  const { currentUser } = useContext(AuthorizationContext);
+  const { socket, t } = useContext(UtilsContext);
+  const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const currentLang = i18n.language;
   const { username } = currentUser;

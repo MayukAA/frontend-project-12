@@ -1,18 +1,24 @@
+/* eslint-disable */
+
 import '../index.css';
 import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoPerson, GoGlobe } from 'react-icons/go';
+
 import AuthorizationContext from '../context/AuthorizationContext';
+import UtilsContext from '../context/UtilsContext';
 import routes from '../utils/routes';
 
 const Navbar = () => {
   const { currentUser, deAuthorization } = useContext(AuthorizationContext);
+  const { t } = useContext(UtilsContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
 
   const currentLang = i18n.language;
+  localStorage.setItem('currentLanguage', currentLang);
 
   const handleLogOut = () => {
     deAuthorization();
