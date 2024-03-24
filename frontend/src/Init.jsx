@@ -4,6 +4,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import i18next from 'i18next';
 import { initReactI18next, I18nextProvider } from 'react-i18next';
+import leoProfanity from 'leo-profanity';
 
 import './index.css';
 import App from './App';
@@ -15,6 +16,7 @@ const Init = async () => {
   const i18n = i18next.createInstance();
   const currentLanguage = localStorage.getItem('currentLanguage');
   const defaultLanguage = currentLanguage || 'ru';
+  const leoProfanityFilter = leoProfanity;
 
   await i18n
     .use(initReactI18next)
@@ -26,6 +28,10 @@ const Init = async () => {
         escapeValue: false,
       },
     });
+
+  leoProfanityFilter
+    .add(leoProfanityFilter.getDictionary('en'))
+    .add(leoProfanityFilter.getDictionary('ru'));
 
   return (
     <React.StrictMode>

@@ -10,6 +10,7 @@ import {
   GoPencil,
 } from 'react-icons/go';
 import cn from 'classnames';
+import leoProfanity from 'leo-profanity';
 
 import UtilsContext from '../../context/UtilsContext';
 import StateContext from '../../context/StateContext';
@@ -58,6 +59,7 @@ const ChannelsBox = ({ dispatch }) => {
   const getButtonChannel = ({ id, name }) => {
     const isCurrentChannel = id === currentChannel.id;
     const isUnreadChannel = unreadChannels.includes(id);
+    const profanityCleanChannelName = leoProfanity.clean(name);
     const buttonChannelClass = cn('d-flex', 'w-100', 'btn', 'btn-chnl', 'align-items-center', 'justify-content-between', 'text-start', 'text-truncate', {
       'btn-dark': isCurrentChannel,
     });
@@ -71,7 +73,7 @@ const ChannelsBox = ({ dispatch }) => {
       >
         <span className="text-truncate me-1">
           {'# '}
-          {name}
+          {profanityCleanChannelName}
         </span>
         {isUnreadChannel
           ? <GoUnread className="text-dark" style={{ minWidth: '1rem' }} />

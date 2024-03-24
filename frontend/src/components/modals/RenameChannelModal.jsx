@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
+import leoProfanity from 'leo-profanity';
 
 import AuthorizationContext from '../../context/AuthorizationContext';
 import UtilsContext from '../../context/UtilsContext';
@@ -24,6 +25,7 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
   const { i18n } = useTranslation();
+  const profanityCleanChannelName = leoProfanity.clean(oldName);
 
   const currentLang = i18n.language;
   const { username } = currentUser;
@@ -74,7 +76,7 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
             </div>
             <div className="modal-body">
               <Formik
-                initialValues={{ name: oldName }}
+                initialValues={{ name: profanityCleanChannelName }}
                 validationSchema={channelSchema}
                 validateOnChange={false}
                 validateOnBlur={false}

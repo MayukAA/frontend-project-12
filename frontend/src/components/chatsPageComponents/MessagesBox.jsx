@@ -6,6 +6,7 @@ import { GoTrash, GoPencil } from 'react-icons/go';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import cn from 'classnames';
 import _ from 'lodash';
+import leoProfanity from 'leo-profanity';
 
 import AuthorizationContext from '../../context/AuthorizationContext';
 import UtilsContext from '../../context/UtilsContext';
@@ -100,9 +101,15 @@ const MessagesBox = ({ dayEl }) => {
     if (isService.root === 'noticeAddChannel' || isService.root === 'noticeRenameChannel') {
       const { data } = isService;
       const { oldName, newName } = data;
+      const profanityCleanOldName = leoProfanity.clean(oldName);
+      const profanityCleanNewName = leoProfanity.clean(newName);
       const body = isService.root === 'noticeAddChannel'
         ? t('serviceMessages.addChannel', { username: data.username })
-        : t('serviceMessages.renameChannel', { username: data.username, oldName, newName });
+        : t('serviceMessages.renameChannel', {
+          username: data.username,
+          oldName: profanityCleanOldName,
+          newName: profanityCleanNewName,
+        });
 
       return (
         <div
@@ -120,6 +127,8 @@ const MessagesBox = ({ dayEl }) => {
   };
 
   const getUserMessage = (body, id, author, date) => {
+    const profanityCleanBody = leoProfanity.clean(body);
+    const profanityCleanEditedMsg = leoProfanity.clean(currChnlEditedMsgs[id]);
     const isOwnMsg = author === username;
     const isRemovedMsg = currChnlRemovedMsgsIds.includes(id);
     const isEditedMsg = Object.hasOwn(currChnlEditedMsgs, id);
@@ -157,9 +166,9 @@ const MessagesBox = ({ dayEl }) => {
 
     const getMsgBody = () => {
       if (isRemovedMsg) return t('chatsPage.messageDeleted');
-      if (isEditedMsg) return getTextWithParagraphs(currChnlEditedMsgs[id]);
+      if (isEditedMsg) return getTextWithParagraphs(profanityCleanEditedMsg);
 
-      return getTextWithParagraphs(body);
+      return getTextWithParagraphs(profanityCleanBody);
     };
 
     return (

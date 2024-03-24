@@ -3,6 +3,8 @@
 import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { toast } from 'react-toastify';
+import leoProfanity from 'leo-profanity';
+
 import UtilsContext from '../../context/UtilsContext';
 import StateContext from '../../context/StateContext';
 
@@ -11,6 +13,7 @@ const RemoveChannelModal = ({ id, name }) => {
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { i18n } = useTranslation();
+  const profanityCleanChannelName = leoProfanity.clean(name);
 
   const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);
@@ -21,7 +24,7 @@ const RemoveChannelModal = ({ id, name }) => {
     socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
       if (status === 'ok') {
         closeModal();
-        toast.info(t('modals.channelRemoved', { channelName: name }));
+        toast.info(t('modals.channelRemoved', { channelName: profanityCleanChannelName }));
       }
     });
   };
@@ -36,11 +39,11 @@ const RemoveChannelModal = ({ id, name }) => {
           <div className="modal-content">
             <div className="modal-header">
               <div className="modal-title h4">
-                <Trans i18nKey="modals.removeChannel" values={{ channelName: name }}>
+                <Trans i18nKey="modals.removeChannel" values={{ channelName: profanityCleanChannelName }}>
                   {'Удалить канал '}
                   <strong>
                     {'# '}
-                    {{ name }}
+                    {{ profanityCleanChannelName }}
                   </strong>
                 </Trans>
               </div>
