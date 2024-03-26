@@ -2,6 +2,7 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useRollbar } from '@rollbar/react';
 import io from 'socket.io-client';
 
 import UtilsContext from './UtilsContext';
@@ -14,22 +15,24 @@ const socket = io('wss://hexlet-chat-spn2.onrender.com');
 const UtilsProvider = ({ children }) => {
   const { currentChannel } = useSelector((state) => state.channelsUI);
   const messages = useSelector(selectorsMessages.selectAll);
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const rollbar = useRollbar();
+
   const currChnlMessages = messages.filter((msg) => msg.channelId === currentChannel.id);
   const currChnlUsersMsgsCount = currChnlMessages.filter((msg) => !msg.isService).length;
 
-  const dispatch = useDispatch();
   const setCurrentChannel = (args) => dispatch(updateCurrentChannel(args));
-
-  const { t } = useTranslation();
 
   return (
     <UtilsContext.Provider value={{
       socket,
       currentChannel,
+      t,
+      rollbar,
       currChnlMessages,
       currChnlUsersMsgsCount,
       setCurrentChannel,
-      t,
     }}>
       {children}
     </UtilsContext.Provider>

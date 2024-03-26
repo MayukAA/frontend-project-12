@@ -23,11 +23,15 @@ const urlCheck = 'https://hexlet-chat-spn2.onrender.com/';
 const urlToBackground = 'https://catherineasquithgallery.com/uploads/posts/2021-02/1614383788_11-p-fon-dlya-chata-v-vk-svetlii-12.jpg';
 
 const ChatsPage = () => {
-  const { socket, setCurrentChannel, t } = useContext(UtilsContext);
+  const {
+    socket,
+    t,
+    rollbar,
+    setCurrentChannel,
+  } = useContext(UtilsContext);
   const { currentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
   const dispatch = useDispatch();
   const dayEl = useRef();
-
   const { unreadChannels } = useSelector((state) => state.channelsUI);
 
   localStorage.setItem('unreadChannels', unreadChannels);
@@ -42,12 +46,13 @@ const ChatsPage = () => {
         toast.error(t('noInternetConnection'), { toastId: 'customId', autoClose: false });
       }
       setBtnDisabledNetworkWait(true);
+      rollbar.error('ChatsPage: "checkConnection()" error');
     }
   };
 
   useEffect(() => {
     setCurrentChannel({ status: 'init' });
-    dispatch(dispatchData(t));
+    dispatch(dispatchData(t, rollbar));
 
     socket.on('newMessage', (payload) => dispatch(addMessage(payload)));
     socket.on('newChannel', (payload) => dispatch(addChannel(payload)));

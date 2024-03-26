@@ -6,7 +6,7 @@ import routes from './routes';
 import { setChannels } from '../slices/channelsSlice';
 import { setMessages } from '../slices/messagesSlice';
 
-const dispatchData = (t) => async (dispatch) => {
+const dispatchData = (t, rollbar) => async (dispatch) => {
   const { token } = JSON.parse(localStorage.getItem('user'));
   try {
     const { data } = await axios.get(routes.dataPath(), {
@@ -20,6 +20,7 @@ const dispatchData = (t) => async (dispatch) => {
     dispatch(setMessages(messages));
   } catch (error) {
     toast.error(t('dataLoadingError'));
+    rollbar.error('ChatsPage: "dispatchData()" error');
   }
 };
 

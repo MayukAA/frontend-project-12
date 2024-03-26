@@ -19,7 +19,12 @@ import getFormattedDate from '../../utils/getFormattedDate';
 
 const MessagesForm = ({ dayEl }) => {
   const { currentUser } = useContext(AuthorizationContext);
-  const { socket, currChnlMessages, t } = useContext(UtilsContext);
+  const {
+    socket,
+    t,
+    rollbar,
+    currChnlMessages,
+  } = useContext(UtilsContext);
   const {
     isScrollBottom,
     setFieldSizeForScroll,
@@ -34,9 +39,9 @@ const MessagesForm = ({ dayEl }) => {
   const [fieldText, setFieldText] = useState('');
   const labelEl = useRef();
   const textareaEl = useRef();
+  const { currentChannel } = useSelector((state) => state.channelsUI);
 
   const { username } = currentUser;
-  const { currentChannel } = useSelector((state) => state.channelsUI);
 
   useEffect(() => {
     labelEl.current.focus();
@@ -92,7 +97,13 @@ const MessagesForm = ({ dayEl }) => {
                   root: 'editMsg',
                   data: { msgId: idEditableMsg, newText: body },
                 },
-              }, ({ status }) => (status === 'ok' ? handleResetMsgEditingMode() : toast.error(t('networkError'))));
+              }, ({ status }) => {
+                if (status === 'ok') handleResetMsgEditingMode();
+                else {
+                  toast.error(t('networkError'));
+                  rollbar.error('MessagesForm, message editing error');
+                }
+              });
             }
           } else {
             const date = new Date();
@@ -110,7 +121,13 @@ const MessagesForm = ({ dayEl }) => {
               channelId: currentChannel.id,
               author: username,
               date: new Date(),
-            }, ({ status }) => (status === 'ok' ? resetForm() : toast.error(t('networkError'))));
+            }, ({ status }) => {
+              if (status === 'ok') resetForm();
+              else {
+                toast.error(t('networkError'));
+                rollbar.error('MessagesForm, message sending error');
+              }
+            });
           }
 
           labelEl.current.focus();

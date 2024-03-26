@@ -3,11 +3,12 @@
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+
 import UtilsContext from '../../context/UtilsContext';
 import StateContext from '../../context/StateContext';
 
 const RemoveMessageModal = ({ id, currentChannelId }) => {
-  const { socket, t } = useContext(UtilsContext);
+  const { socket, t, rollbar } = useContext(UtilsContext);
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { i18n } = useTranslation();
@@ -30,6 +31,7 @@ const RemoveMessageModal = ({ id, currentChannelId }) => {
         toast.info(t('modals.messageRemoved'));
       } else {
         toast.error(t('networkError'));
+        rollbar.error('RemoveMessageModal error');
       }
     });
   };

@@ -9,12 +9,12 @@ import UtilsContext from '../../context/UtilsContext';
 import StateContext from '../../context/StateContext';
 
 const RemoveChannelModal = ({ id, name }) => {
-  const { socket, t } = useContext(UtilsContext);
+  const { socket, t, rollbar } = useContext(UtilsContext);
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const { i18n } = useTranslation();
-  const profanityCleanChannelName = leoProfanity.clean(name);
 
+  const profanityCleanChannelName = leoProfanity.clean(name);
   const currentLang = i18n.language;
   const closeModal = () => setCurrentModal(null);
 
@@ -25,6 +25,9 @@ const RemoveChannelModal = ({ id, name }) => {
       if (status === 'ok') {
         closeModal();
         toast.info(t('modals.channelRemoved', { channelName: profanityCleanChannelName }));
+      } else {
+        toast.error(t('networkError'));
+        rollbar.error('RemoveChannelModal error');
       }
     });
   };

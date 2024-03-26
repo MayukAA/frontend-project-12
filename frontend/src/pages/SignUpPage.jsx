@@ -16,7 +16,7 @@ import routes from '../utils/routes';
 
 const SignUpPage = () => {
   const { authorization } = useContext(AuthorizationContext);
-  const { t } = useContext(UtilsContext);
+  const { t, rollbar } = useContext(UtilsContext);
   const [signUpError, setSignUpError] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
@@ -50,6 +50,7 @@ const SignUpPage = () => {
                     setButtonDisabled(false);
                     if (error.message === 'Network Error') toast.error(t('networkError'));
                     else if (error.response.status === 409) setSignUpError(true);
+                    rollbar.error('SignUpPage', error);
                   }
                 }}
               >

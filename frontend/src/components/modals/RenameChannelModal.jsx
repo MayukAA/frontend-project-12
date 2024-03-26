@@ -19,14 +19,14 @@ import { getModalSchema } from '../../utils/validationSchemas';
 
 const RenameChannelModal = ({ id, oldName, channelsNames }) => {
   const { currentUser } = useContext(AuthorizationContext);
-  const { socket, t } = useContext(UtilsContext);
+  const { socket, t, rollbar } = useContext(UtilsContext);
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const inputEl = useRef();
   const { i18n } = useTranslation();
-  const profanityCleanChannelName = leoProfanity.clean(oldName);
 
+  const profanityCleanChannelName = leoProfanity.clean(oldName);
   const currentLang = i18n.language;
   const { username } = currentUser;
   const closeModal = () => setCurrentModal(null);
@@ -97,6 +97,9 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
                         date: new Date(),
                       });
                       closeModal();
+                    } else {
+                      toast.error(t('networkError'));
+                      rollbar.error('RemoveMessageModal error');
                     }
                   });
                 }}

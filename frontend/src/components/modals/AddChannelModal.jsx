@@ -18,7 +18,12 @@ import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ channelsNames }) => {
   const { currentUser } = useContext(AuthorizationContext);
-  const { socket, setCurrentChannel, t } = useContext(UtilsContext);
+  const {
+    socket,
+    t,
+    rollbar,
+    setCurrentChannel,
+  } = useContext(UtilsContext);
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
@@ -98,6 +103,9 @@ const AddChannelModal = ({ channelsNames }) => {
                         date: new Date(),
                       });
                       closeModal();
+                    } else {
+                      toast.error(t('networkError'));
+                      rollbar.error('AddChannelModal error');
                     }
                   });
                 }}

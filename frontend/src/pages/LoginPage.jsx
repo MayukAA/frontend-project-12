@@ -19,7 +19,7 @@ import routes from '../utils/routes';
 
 const LoginPage = () => {
   const { authorization } = useContext(AuthorizationContext);
-  const { t } = useContext(UtilsContext);
+  const { t, rollbar } = useContext(UtilsContext);
   const [authorizationError, setAuthError] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const labelEl = useRef();
@@ -55,6 +55,7 @@ const LoginPage = () => {
                       setButtonDisabled(false);
                       if (error.message === 'Network Error') toast.error(t('networkError'));
                       else if (error.response.status === 401) setAuthError(true);
+                      rollbar.error('LoginPage', error);
                     }
                   }}
                 >
