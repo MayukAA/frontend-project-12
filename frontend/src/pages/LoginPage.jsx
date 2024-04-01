@@ -1,7 +1,3 @@
-import '../styles.scss';
-import 'bootstrap';
-import axios from 'axios';
-import cn from 'classnames';
 import {
   useContext,
   useEffect,
@@ -11,10 +7,11 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
+import axios from 'axios';
+import cn from 'classnames';
 
 import AuthorizationContext from '../context/AuthorizationContext';
 import UtilsContext from '../context/UtilsContext';
-import { loginSchema } from '../utils/validationSchemas';
 import routes from '../utils/routes';
 
 const LoginPage = () => {
@@ -40,7 +37,6 @@ const LoginPage = () => {
               <div className="card-body row justify-content-center p-5">
                 <Formik
                   initialValues={{ username: '', password: '' }}
-                  validationSchema={loginSchema}
                   validateOnChange={false}
                   validateOnBlur={false}
                   validateOnSubmit
@@ -59,29 +55,43 @@ const LoginPage = () => {
                     }
                   }}
                 >
-                  {({ errors, touched }) => (
-                    <Form className="col-12 col-md-6 mt-3 mt-mb-0">
-                      <h1 className="text-center mb-4">{t('signIn')}</h1>
-                      <div className="form-floating mb-3">
-                        <Field type="text" name="username" placeholder={t('loginPage.username')} id="username" className={formFieldClass} />
-                        <label htmlFor="username" ref={labelEl}>{t('loginPage.username')}</label>
-                        {(errors.username && touched.username) && (
-                          <p className="text-danger px-1">{t('validUsernameOrChannelErr')}</p>
-                        )}
-                      </div>
-                      <div className="form-floating mb-3">
-                        <Field type="password" name="password" placeholder={t('password')} id="password" className={formFieldClass} />
-                        <label className="form-label" htmlFor="password">{t('password')}</label>
-                        {(errors.password && touched.password) && (
-                          <p className="text-danger px-1">{t('loginPage.validationPasswordErr5')}</p>
-                        )}
-                        {authorizationError && (
-                          <div className="card bg-danger text-light mt-1 p-1">{t('loginPage.authError')}</div>
-                        )}
-                      </div>
-                      <button type="submit" className="w-100 mb-3 btn btn-outline-primary" disabled={buttonDisabled}>{t('signIn')}</button>
-                    </Form>
-                  )}
+                  <Form className="col-12 col-md-6 mt-3 mt-mb-0">
+                    <h1 className="text-center mb-4">{t('signIn')}</h1>
+                    <div className="form-floating mb-3">
+                      <Field
+                        type="text"
+                        name="username"
+                        placeholder={t('loginPage.username')}
+                        id="username"
+                        className={formFieldClass}
+                        required
+                      />
+                      <label htmlFor="username" ref={labelEl}>{t('loginPage.username')}</label>
+                    </div>
+                    <div className="form-floating mb-4">
+                      <Field
+                        type="password"
+                        name="password"
+                        placeholder={t('password')}
+                        id="password"
+                        className={formFieldClass}
+                        required
+                      />
+                      <label className="form-label" htmlFor="password">{t('password')}</label>
+                      {authorizationError && (
+                        <div className="invalid-tooltip w-100 ps-2 py-0">
+                          {t('loginPage.authError')}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-100 mb-3 btn btn-outline-primary"
+                      disabled={buttonDisabled}
+                    >
+                      {t('signIn')}
+                    </button>
+                  </Form>
                 </Formik>
               </div>
               <div className="card-footer p-4">
