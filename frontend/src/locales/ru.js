@@ -32,6 +32,7 @@ export default {
       userExists: 'Такой пользователь уже существует',
     },
     chatsPage: {
+      loading: 'Загрузка...',
       messageDeleted: 'сообщение удалено',
       management: 'Управление каналом',
       rename: 'Переименовать',

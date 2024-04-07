@@ -1,12 +1,10 @@
 /* eslint-disable */
 
-import '../styles.scss';
-import '../index.css';
-import 'bootstrap';
 import { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
+import LoadingDataModal from '../components/modals/LoadingDataModal';
 import ChannelsBox from '../components/chatsPageComponents/ChannelsBox';
 import MessagesBoxHeader from '../components/chatsPageComponents/MessagesBoxHeader';
 import MessagesBox from '../components/chatsPageComponents/MessagesBox';
@@ -29,10 +27,11 @@ const ChatsPage = () => {
     rollbar,
     setCurrentChannel,
   } = useContext(UtilsContext);
-  const { currentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
+  const { currentModal, setCurrentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
   const dispatch = useDispatch();
   const dayEl = useRef();
   const { unreadChannels } = useSelector((state) => state.channelsUI);
+  const { appStatus } = useSelector((state) => state.appStatus);
 
   localStorage.setItem('unreadChannels', unreadChannels);
 
@@ -64,6 +63,10 @@ const ChatsPage = () => {
 
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    setCurrentModal(appStatus === 'loading' && <LoadingDataModal />);
+  }, [appStatus]);
 
   return (
     <div className="container h-100 overflow-hidden rounded shadow my-4">

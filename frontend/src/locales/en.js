@@ -32,6 +32,7 @@ export default {
       userExists: 'Username already taken',
     },
     chatsPage: {
+      loading: 'Loading...',
       messageDeleted: 'message deleted',
       management: 'Channel control',
       rename: 'Rename',
