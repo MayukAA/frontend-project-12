@@ -12,6 +12,12 @@ const StateProvider = ({ children }) => {
   const [idEditableMsg, setIdEditableMsg] = useState(null);
   const [btnDisabledNetworkWait, setBtnDisabledNetworkWait] = useState(false);
 
+  const handleResetMsgEditingMode = () => {
+    setTextEditableMsg('');
+    setIdEditableMsg(null);
+    setMsgEditingMode(false);
+  };
+
   return (
     <StateContext.Provider value={{
       currentModal,
@@ -28,6 +34,7 @@ const StateProvider = ({ children }) => {
       setIdEditableMsg,
       btnDisabledNetworkWait,
       setBtnDisabledNetworkWait,
+      handleResetMsgEditingMode,
     }}>
       {children}
     </StateContext.Provider>

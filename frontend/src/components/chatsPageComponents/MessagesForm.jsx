@@ -29,12 +29,10 @@ const MessagesForm = ({ dayEl }) => {
     isScrollBottom,
     setFieldSizeForScroll,
     msgEditingMode,
-    setMsgEditingMode,
     textEditableMsg,
-    setTextEditableMsg,
     idEditableMsg,
-    setIdEditableMsg,
     btnDisabledNetworkWait,
+    handleResetMsgEditingMode,
   } = useContext(StateContext);
   const [fieldText, setFieldText] = useState('');
   const labelEl = useRef();
@@ -61,12 +59,6 @@ const MessagesForm = ({ dayEl }) => {
     'pt-2': msgEditingMode,
     'pb-3': msgEditingMode,
   });
-
-  const handleResetMsgEditingMode = () => {
-    setTextEditableMsg('');
-    setIdEditableMsg(null);
-    setMsgEditingMode(false);
-  };
 
   return (
     <div className={formContainerClass}>

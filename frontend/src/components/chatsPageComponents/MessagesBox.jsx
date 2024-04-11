@@ -48,7 +48,7 @@ const MessagesBox = ({ dayEl }) => {
 
   useEffect(() => {
     msgBoxBottom.current.scrollIntoView({ behavior: 'smooth' });
-  }, [currentChannel]);
+  }, [currentChannel.id]);
 
   useEffect(() => {
     if (!msgEditingMode) {
@@ -60,6 +60,12 @@ const MessagesBox = ({ dayEl }) => {
       }
     }
   }, [currChnlUsersMsgsCount, fieldSizeForScroll]);
+
+  useEffect(() => {
+    if (!msgEditingMode && isScrollBottom) {
+      msgBoxBottom.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [currChnlEditedMsgs]);
 
   useEffect(() => {
     if (msgEditingMode) {

@@ -23,7 +23,7 @@ import RenameChannelModal from '../modals/RenameChannelModal';
 
 const ChannelsBox = ({ dispatch }) => {
   const { setCurrentChannel, t } = useContext(UtilsContext);
-  const { setCurrentModal } = useContext(StateContext);
+  const { setCurrentModal, handleResetMsgEditingMode } = useContext(StateContext);
   const channelsContainerEl = useRef();
   const scrollChnlEl = useRef();
 
@@ -40,6 +40,8 @@ const ChannelsBox = ({ dispatch }) => {
     if (dropdownUlEl) dropdownUlEl.classList.remove('show');
 
     dispatch(resetUnreadChannel(currentChannel.id));
+
+    handleResetMsgEditingMode();
   }, [currentChannel]);
 
   useEffect(() => {
