@@ -12,7 +12,7 @@ import MessagesForm from '../components/chatsPageComponents/MessagesForm';
 
 import UtilsContext from '../context/UtilsContext';
 import StateContext from '../context/StateContext';
-import dispatchData from '../utils/dispatchData';
+import fetchData from '../slices/thunkFetchData';
 import { addChannel, removeChannel, renameChannel } from '../slices/channelsSlice';
 import { addMessage } from '../slices/messagesSlice';
 
@@ -51,7 +51,7 @@ const ChatsPage = () => {
 
   useEffect(() => {
     setCurrentChannel({ status: 'init' });
-    dispatch(dispatchData(t, rollbar));
+    dispatch(fetchData());
 
     socket.on('newMessage', (payload) => dispatch(addMessage(payload)));
     socket.on('newChannel', (payload) => dispatch(addChannel(payload)));
@@ -66,6 +66,11 @@ const ChatsPage = () => {
 
   useEffect(() => {
     setCurrentModal(appStatus === 'loading' && <LoadingDataModal />);
+
+    if (appStatus === 'failed') {
+      toast.error(t('dataLoadingError'));
+      rollbar.error('ChatsPage: "dispatchData()" error');
+    }
   }, [appStatus]);
 
   return (

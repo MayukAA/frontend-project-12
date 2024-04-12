@@ -1,18 +1,25 @@
 /* eslint-disable */
 
 import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
-import { setMessages } from './messagesSlice';
+import fetchData from './thunkFetchData';
 
 const appStatusAdapter = createEntityAdapter();
-const initialState = { appStatus: 'loading' };
+const initialState = { appStatus: 'idle' };
 
 const appStatusSlice = createSlice({
   name: 'appStatus',
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(setMessages, (state) => {
-      state.appStatus = 'using';
-    });
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.appStatus = 'loading';
+      })
+      .addCase(fetchData.fulfilled, (state) => {
+        state.appStatus = 'idle';
+      })
+      .addCase(fetchData.rejected, (state) => {
+        state.appStatus = 'failed';
+      });
   },
 });
 
