@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import UtilsContext from '../../context/UtilsContext';
+import { UtilsContext } from '../../context/index';
 
 const LoadingDataModal = () => {
   const { t } = useContext(UtilsContext);

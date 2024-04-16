@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import {
   useContext,
   useState,
@@ -11,9 +9,7 @@ import { toast } from 'react-toastify';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 
-import AuthorizationContext from '../../context/AuthorizationContext';
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { AuthorizationContext, UtilsContext, StateContext } from '../../context/index';
 import { getModalSchema } from '../../utils/validationSchemas';
 
 const AddChannelModal = ({ channelsNames }) => {

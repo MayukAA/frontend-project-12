@@ -1,11 +1,8 @@
-/* eslint-disable */
-
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { UtilsContext, StateContext } from '../../context/index';
 
 const RemoveMessageModal = ({ id, currentChannelId }) => {
   const { socket, t, rollbar } = useContext(UtilsContext);

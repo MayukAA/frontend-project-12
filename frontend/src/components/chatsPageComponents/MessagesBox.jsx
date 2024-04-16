@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { useEffect, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { GoTrash, GoPencil } from 'react-icons/go';
@@ -8,9 +6,7 @@ import cn from 'classnames';
 import _ from 'lodash';
 import leoProfanity from 'leo-profanity';
 
-import AuthorizationContext from '../../context/AuthorizationContext';
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { AuthorizationContext, UtilsContext, StateContext } from '../../context/index';
 import RemoveMessageModal from '../modals/RemoveMessageModal';
 import getFormattedDate from '../../utils/getFormattedDate';
 
@@ -69,12 +65,13 @@ const MessagesBox = ({ dayEl }) => {
 
   useEffect(() => {
     if (msgEditingMode) {
-      const observer = new IntersectionObserver(() => {
-        if (editableMsgEl.current) {
-          editableMsgEl.current.scrollIntoView({ block: 'end', inline: 'nearest', behavior: 'smooth' });
-        }
-      },
-      { root: messagesContainerEl.current, threshold: 0.99 },
+      const observer = new IntersectionObserver(
+        () => {
+          if (editableMsgEl.current) {
+            editableMsgEl.current.scrollIntoView({ block: 'end', inline: 'nearest', behavior: 'smooth' });
+          }
+        },
+        { root: messagesContainerEl.current, threshold: 0.99 },
       );
 
       observer.observe(editableMsgEl.current);
@@ -89,6 +86,7 @@ const MessagesBox = ({ dayEl }) => {
     setIsScrollBottom(scrollPos < smallMarginPx || (scrollTop + clientHeight) > scrollHeight);
   };
 
+  // eslint-disable-next-line
   const getServiceMessage = (id, isService, date) => {
     if (isService.root === 'newDay') {
       const isToday = getFormattedDate(date, 'day') === getFormattedDate(new Date(), 'day');

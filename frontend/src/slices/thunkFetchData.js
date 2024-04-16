@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import routes from '../utils/routes';

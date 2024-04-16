@@ -1,10 +1,9 @@
-/* eslint-disable */
-
-import { useState } from 'react';
-import AuthorizationContext from './AuthorizationContext';
+import { useState, useMemo } from 'react';
+import { AuthorizationContext } from './index';
 
 const AuthorizationProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
+  // eslint-disable-next-line
   const [user, setUser] = useState(currentUser ? { userName: currentUser.username } : null);
 
   const authorization = (userData) => {
@@ -17,8 +16,14 @@ const AuthorizationProvider = ({ children }) => {
     setUser(null);
   };
 
+  const authUtils = useMemo(() => ({
+    currentUser,
+    authorization,
+    deAuthorization,
+  }), [currentUser, authorization, deAuthorization]);
+
   return (
-    <AuthorizationContext.Provider value={{ currentUser, authorization, deAuthorization }}>
+    <AuthorizationContext.Provider value={authUtils}>
       {children}
     </AuthorizationContext.Provider>
   );

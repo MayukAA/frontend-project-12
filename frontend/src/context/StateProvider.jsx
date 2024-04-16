@@ -1,7 +1,5 @@
-/* eslint-disable */
-
-import { useState } from 'react';
-import StateContext from './StateContext';
+import { useState, useMemo } from 'react';
+import { StateContext } from './index';
 
 const StateProvider = ({ children }) => {
   const [currentModal, setCurrentModal] = useState(null);
@@ -18,24 +16,42 @@ const StateProvider = ({ children }) => {
     setMsgEditingMode(false);
   };
 
+  const states = useMemo(() => ({
+    currentModal,
+    setCurrentModal,
+    isScrollBottom,
+    setIsScrollBottom,
+    fieldSizeForScroll,
+    setFieldSizeForScroll,
+    msgEditingMode,
+    setMsgEditingMode,
+    textEditableMsg,
+    setTextEditableMsg,
+    idEditableMsg,
+    setIdEditableMsg,
+    btnDisabledNetworkWait,
+    setBtnDisabledNetworkWait,
+    handleResetMsgEditingMode,
+  }), [
+    currentModal,
+    setCurrentModal,
+    isScrollBottom,
+    setIsScrollBottom,
+    fieldSizeForScroll,
+    setFieldSizeForScroll,
+    msgEditingMode,
+    setMsgEditingMode,
+    textEditableMsg,
+    setTextEditableMsg,
+    idEditableMsg,
+    setIdEditableMsg,
+    btnDisabledNetworkWait,
+    setBtnDisabledNetworkWait,
+    handleResetMsgEditingMode,
+  ]);
+
   return (
-    <StateContext.Provider value={{
-      currentModal,
-      setCurrentModal,
-      isScrollBottom,
-      setIsScrollBottom,
-      fieldSizeForScroll,
-      setFieldSizeForScroll,
-      msgEditingMode,
-      setMsgEditingMode,
-      textEditableMsg,
-      setTextEditableMsg,
-      idEditableMsg,
-      setIdEditableMsg,
-      btnDisabledNetworkWait,
-      setBtnDisabledNetworkWait,
-      handleResetMsgEditingMode,
-    }}>
+    <StateContext.Provider value={states}>
       {children}
     </StateContext.Provider>
   );

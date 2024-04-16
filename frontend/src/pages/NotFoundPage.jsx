@@ -1,7 +1,5 @@
-import '../styles.scss';
-import 'bootstrap';
 import { useContext } from 'react';
-import UtilsContext from '../context/UtilsContext';
+import { UtilsContext } from '../context/index';
 
 const NotFoundPage = () => {
   const { t } = useContext(UtilsContext);

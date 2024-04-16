@@ -1,11 +1,10 @@
-/* eslint-disable */
-
+import { useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
 import io from 'socket.io-client';
 
-import UtilsContext from './UtilsContext';
+import { UtilsContext } from './index';
 import { updateCurrentChannel } from '../slices/channelsUISlice';
 import { selectorsMessages } from '../slices/messagesSlice';
 
@@ -24,16 +23,26 @@ const UtilsProvider = ({ children }) => {
 
   const setCurrentChannel = (args) => dispatch(updateCurrentChannel(args));
 
+  const utils = useMemo(() => ({
+    socket,
+    currentChannel,
+    t,
+    rollbar,
+    currChnlMessages,
+    currChnlUsersMsgsCount,
+    setCurrentChannel,
+  }), [
+    socket,
+    currentChannel,
+    t,
+    rollbar,
+    currChnlMessages,
+    currChnlUsersMsgsCount,
+    setCurrentChannel,
+  ]);
+
   return (
-    <UtilsContext.Provider value={{
-      socket,
-      currentChannel,
-      t,
-      rollbar,
-      currChnlMessages,
-      currChnlUsersMsgsCount,
-      setCurrentChannel,
-    }}>
+    <UtilsContext.Provider value={utils}>
       {children}
     </UtilsContext.Provider>
   );

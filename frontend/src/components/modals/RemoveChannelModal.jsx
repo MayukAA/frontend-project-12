@@ -1,12 +1,9 @@
-/* eslint-disable */
-
 import { useContext, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { toast } from 'react-toastify';
 import leoProfanity from 'leo-profanity';
 
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { UtilsContext, StateContext } from '../../context/index';
 
 const RemoveChannelModal = ({ id, name }) => {
   const { socket, t, rollbar } = useContext(UtilsContext);

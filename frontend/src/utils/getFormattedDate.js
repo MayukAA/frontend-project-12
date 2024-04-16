@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 const getFormattedDate = (date, dayOrTime) => {
   const langLocalStorage = localStorage.getItem('currentLanguage');
   const currentLang = langLocalStorage || 'ru';

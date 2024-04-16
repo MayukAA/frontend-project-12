@@ -1,6 +1,7 @@
 env:
   es2021: true
   node: true
+  browser: true
 
 extends: airbnb
 
@@ -13,3 +14,8 @@ rules:
   react/react-in-jsx-scope: 0
   react/jsx-uses-react: 0
   react/function-component-definition: [2, { "namedComponents": "arrow-function" }]
+  react/prop-types: 0
+  react/jsx-props-no-spreading: 0
+
+globals:
+  localStorage: true

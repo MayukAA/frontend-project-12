@@ -1,13 +1,9 @@
-/* eslint-disable */
-
-import '../index.css';
 import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { GoPerson, GoGlobe } from 'react-icons/go';
 
-import AuthorizationContext from '../context/AuthorizationContext';
-import UtilsContext from '../context/UtilsContext';
+import { AuthorizationContext, UtilsContext } from '../context/index';
 import routes from '../utils/routes';
 
 const Navbar = () => {

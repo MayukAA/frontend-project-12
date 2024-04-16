@@ -1,5 +1,6 @@
-/* eslint-disable */
-
+import './styles.scss';
+import './index.css';
+import 'bootstrap';
 import {
   BrowserRouter,
   Routes,

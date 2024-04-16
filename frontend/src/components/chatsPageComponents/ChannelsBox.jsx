@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { useEffect, useContext, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -12,8 +10,7 @@ import {
 import cn from 'classnames';
 import leoProfanity from 'leo-profanity';
 
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { UtilsContext, StateContext } from '../../context/index';
 import { selectorsChannels } from '../../slices/channelsSlice';
 import { resetUnreadChannel } from '../../slices/channelsUISlice';
 
@@ -46,12 +43,13 @@ const ChannelsBox = ({ dispatch }) => {
 
   useEffect(() => {
     if (scrollChnlEl.current) {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting && scrollChnlEl.current) {
-          scrollChnlEl.current.scrollIntoView({ behavior: 'smooth' });
-        }
-      },
-      { root: channelsContainerEl.current, threshold: 0.99 },
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting && scrollChnlEl.current) {
+            scrollChnlEl.current.scrollIntoView({ behavior: 'smooth' });
+          }
+        },
+        { root: channelsContainerEl.current, threshold: 0.99 },
       );
 
       observer.observe(scrollChnlEl.current);

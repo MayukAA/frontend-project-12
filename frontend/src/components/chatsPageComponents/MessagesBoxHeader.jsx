@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import leoProfanity from 'leo-profanity';
-import UtilsContext from '../../context/UtilsContext';
+import { UtilsContext } from '../../context/index';
 
 const MessagesBoxHeader = () => {
   const { currentChannel, currChnlUsersMsgsCount, t } = useContext(UtilsContext);

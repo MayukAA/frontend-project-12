@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import {
   useEffect,
   useState,
@@ -12,9 +10,7 @@ import { GoPaperAirplane, GoX, GoCheck } from 'react-icons/go';
 import { Formik, Field, Form } from 'formik';
 import cn from 'classnames';
 
-import AuthorizationContext from '../../context/AuthorizationContext';
-import UtilsContext from '../../context/UtilsContext';
-import StateContext from '../../context/StateContext';
+import { AuthorizationContext, UtilsContext, StateContext } from '../../context/index';
 import getFormattedDate from '../../utils/getFormattedDate';
 
 const MessagesForm = ({ dayEl }) => {
@@ -133,23 +129,24 @@ const MessagesForm = ({ dayEl }) => {
 
           return (
             <Form className="py-1">
-              <div className="d-flex has-validation">
+              <div className="has-validation">
                 <Field name="body">
                   {({ field }) => (
                     <div className="d-flex w-100" onChange={setFieldText(field.value)}>
-                      <textarea
-                        name="body"
-                        id="body"
-                        className="form-control border-secondary px-2 me-2"
-                        aria-label={t('chatsPage.newMessage')}
-                        placeholder={t('chatsPage.placeholder')}
-                        ref={textareaEl}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') e.target += '\n';
-                        }}
-                        {...field}
-                      />
-                      <label htmlFor="body" ref={labelEl} />
+                      <label htmlFor="body" className="w-100 me-2" ref={labelEl}>
+                        <textarea
+                          name="body"
+                          id="body"
+                          className="form-control border-secondary px-2"
+                          aria-label={t('chatsPage.newMessage')}
+                          placeholder={t('chatsPage.placeholder')}
+                          ref={textareaEl}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') e.target += '\n';
+                          }}
+                          {...field}
+                        />
+                      </label>
                       {msgEditingMode
                         ? (
                           <button type="submit" className="btn btn-outline-success hov-opac-75 btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>

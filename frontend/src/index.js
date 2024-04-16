@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import ReactDOM from 'react-dom/client';
 import Init from './Init';
 

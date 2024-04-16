@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import React from 'react';
 import { Provider } from 'react-redux';
 import { initReactI18next, I18nextProvider } from 'react-i18next';

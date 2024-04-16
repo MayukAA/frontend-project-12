@@ -10,8 +10,7 @@ import { Formik, Field, Form } from 'formik';
 import axios from 'axios';
 import cn from 'classnames';
 
-import AuthorizationContext from '../context/AuthorizationContext';
-import UtilsContext from '../context/UtilsContext';
+import { AuthorizationContext, UtilsContext } from '../context/index';
 import routes from '../utils/routes';
 
 const LoginPage = () => {

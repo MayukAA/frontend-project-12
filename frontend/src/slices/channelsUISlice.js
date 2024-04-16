@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign */
 
 import { createSlice, current } from '@reduxjs/toolkit';
 import _ from 'lodash';
@@ -10,7 +10,7 @@ const getIdsFromLocSt = () => localStorage.getItem('unreadChannels').split(',').
 const defaultChannel = { id: 1, name: 'general' };
 const initialState = {
   currentChannel: defaultChannel,
-  unreadChannels: !!localStorage.getItem('unreadChannels') ? getIdsFromLocSt() : [],
+  unreadChannels: localStorage.getItem('unreadChannels') ? getIdsFromLocSt() : [],
 };
 
 const channelsUISlice = createSlice({

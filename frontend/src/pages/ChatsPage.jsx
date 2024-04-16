@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { useContext, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -10,8 +8,7 @@ import MessagesBoxHeader from '../components/chatsPageComponents/MessagesBoxHead
 import MessagesBox from '../components/chatsPageComponents/MessagesBox';
 import MessagesForm from '../components/chatsPageComponents/MessagesForm';
 
-import UtilsContext from '../context/UtilsContext';
-import StateContext from '../context/StateContext';
+import { UtilsContext, StateContext } from '../context/index';
 import fetchData from '../slices/thunkFetchData';
 import { addChannel, removeChannel, renameChannel } from '../slices/channelsSlice';
 import { addMessage } from '../slices/messagesSlice';
