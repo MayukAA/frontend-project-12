@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -26,7 +26,6 @@ const ChatsPage = () => {
   } = useContext(UtilsContext);
   const { currentModal, setCurrentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
   const dispatch = useDispatch();
-  const dayEl = useRef();
   const { unreadChannels } = useSelector((state) => state.channelsUI);
   const { appStatus } = useSelector((state) => state.appStatus);
 
@@ -79,8 +78,8 @@ const ChatsPage = () => {
         <ChannelsBox dispatch={dispatch} />
         <div className="d-flex flex-column col h-100 p-0">
           <MessagesBoxHeader />
-          <MessagesBox dayEl={dayEl} />
-          <MessagesForm dayEl={dayEl} />
+          <MessagesBox />
+          <MessagesForm />
         </div>
       </div>
       {currentModal}

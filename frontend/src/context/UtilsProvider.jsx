@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useRollbar } from '@rollbar/react';
@@ -23,6 +23,10 @@ const UtilsProvider = ({ children }) => {
 
   const setCurrentChannel = (args) => dispatch(updateCurrentChannel(args));
 
+  const dayEl = useRef();
+  const editableMsgEl = useRef();
+  const scrollChnlEl = useRef();
+
   const utils = useMemo(() => ({
     socket,
     currentChannel,
@@ -31,6 +35,9 @@ const UtilsProvider = ({ children }) => {
     currChnlMessages,
     currChnlUsersMsgsCount,
     setCurrentChannel,
+    dayEl,
+    editableMsgEl,
+    scrollChnlEl,
   }), [
     socket,
     currentChannel,
@@ -39,6 +46,9 @@ const UtilsProvider = ({ children }) => {
     currChnlMessages,
     currChnlUsersMsgsCount,
     setCurrentChannel,
+    dayEl,
+    editableMsgEl,
+    scrollChnlEl,
   ]);
 
   return (

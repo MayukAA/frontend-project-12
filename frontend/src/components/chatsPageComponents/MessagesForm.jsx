@@ -13,13 +13,14 @@ import cn from 'classnames';
 import { AuthorizationContext, UtilsContext, StateContext } from '../../context/index';
 import getFormattedDate from '../../utils/getFormattedDate';
 
-const MessagesForm = ({ dayEl }) => {
+const MessagesForm = () => {
   const { currentUser } = useContext(AuthorizationContext);
   const {
     socket,
     t,
     rollbar,
     currChnlMessages,
+    dayEl,
   } = useContext(UtilsContext);
   const {
     isScrollBottom,
