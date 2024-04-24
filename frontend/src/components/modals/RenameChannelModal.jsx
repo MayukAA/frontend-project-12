@@ -85,7 +85,7 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
                   socket.emit('renameChannel', value, ({ status }) => {
                     if (status === 'ok') {
                       toast.success(t('modals.channelRenamed'));
-                      // cлужебноe сообщениe о переименовании:
+                      // service announcement of the renaming:
                       socket.emit('newMessage', {
                         channelId: id,
                         isService: {

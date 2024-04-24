@@ -25,7 +25,7 @@ const ChannelsBox = ({ dispatch }) => {
   const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split btn-chnl btn pt-2';
 
   useEffect(() => {
-    // исправление незакрывающегося dropdown;
+    // fix dropdown not closing;
     const dropdownUlEl = document.querySelector('.dropdown-menu.show');
     if (dropdownUlEl) dropdownUlEl.classList.remove('show');
 

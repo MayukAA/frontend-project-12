@@ -84,12 +84,12 @@ const AddChannelModal = ({ channelsNames }) => {
                   socket.emit('newChannel', value, ({ status, data }) => {
                     if (status === 'ok') {
                       toast.success(t('modals.channelCreated'));
-                      // перенос создателя канала в новый канал:
+                      // transferring the channel creator to a new channel:
                       setCurrentChannel({ id: data.id, name: data.name, status: 'standart' });
-                      // служебное сообщение - дата (число-месяц):
+                      // service message - date (date-month):
                       const date = new Date();
                       socket.emit('newMessage', { channelId: data.id, isService: { root: 'newDay' }, date });
-                      // служебное сообщение о создании канала:
+                      // service message about adding a channel:
                       socket.emit('newMessage', {
                         channelId: data.id,
                         isService: {

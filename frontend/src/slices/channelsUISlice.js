@@ -44,7 +44,7 @@ const channelsUISlice = createSlice({
       .addCase(renameChannel, (state, { payload }) => {
         const { id } = payload;
         const { name } = payload.changes;
-        // для "мгновенного" изменения названия канала в поле над сообщениями:
+        // to "instantly" rename the channel in the box above the messages:
         if (id === current(state).currentChannel.id) state.currentChannel = { id, name };
       });
   },
