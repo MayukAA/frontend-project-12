@@ -18,9 +18,6 @@ const SignUpPage = () => {
   const { authorization } = useContext(AuthorizationContext);
   const { t, rollbar } = useContext(UtilsContext);
   const [signUpError, setSignUpError] = useState(false);
-  const [usernameValidErr, setUsernameValidErr] = useState(false);
-  const [passwordValidErr, setPasswordValidErr] = useState(false);
-  const [passwordConfValidErr, setPasswordConfValidErr] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(false);
   const labelEl = useRef();
   const navigate = useNavigate();
@@ -29,31 +26,16 @@ const SignUpPage = () => {
     labelEl.current.focus();
   }, []);
 
-  const setValidError = (fieldName) => {
-    const map = {
-      username: setUsernameValidErr(true),
-      password: setPasswordValidErr(true),
-      passwordConf: setPasswordConfValidErr(true),
-    };
-
-    return map[fieldName];
-  };
-
-  const getWarningValidation = (fieldName, validError) => {
-    setValidError(fieldName);
-
-    return (
-      <div
-        className="position-absolute card border-0 bg-warning text-nowrap smallFont px-2"
-        style={{ top: '35%', left: '102.5%' }}
-      >
-        {t(validError)}
-      </div>
-    );
-  };
+  const getWarningValidation = (validError) => (
+    <div
+      className="position-absolute card border-0 bg-warning text-nowrap smallFont px-2"
+      style={{ top: '35%', left: '102.5%' }}
+    >
+      {t(validError)}
+    </div>
+  );
 
   const usernameFieldClass = cn('form-control', { 'is-invalid': signUpError });
-  const isBtnDisabled = usernameValidErr || passwordValidErr || passwordConfValidErr || btnDisabled;
 
   return (
     <div className="container-fluid h-100">
@@ -97,9 +79,7 @@ const SignUpPage = () => {
                       <label className="form-label" htmlFor="username" ref={labelEl}>
                         {t('signUpPage.userName')}
                       </label>
-                      {(errors.username && touched.username)
-                        ? getWarningValidation('username', 'validUsernameOrChannelErr')
-                        : setUsernameValidErr(false)}
+                      {(errors.username && touched.username) && getWarningValidation('validUsernameOrChannelErr')}
                     </div>
                     <div className="form-floating mb-3">
                       <Field
@@ -110,9 +90,7 @@ const SignUpPage = () => {
                         className="form-control"
                       />
                       <label className="form-label" htmlFor="password">{t('password')}</label>
-                      {(errors.password && touched.password)
-                        ? getWarningValidation('password', 'signUpPage.validationPasswordErr')
-                        : setPasswordValidErr(false)}
+                      {(errors.password && touched.password) && getWarningValidation('signUpPage.validationPasswordErr')}
                     </div>
                     <div className="form-floating mb-4">
                       <Field
@@ -125,16 +103,14 @@ const SignUpPage = () => {
                       <label className="form-label" htmlFor="passwordConf">
                         {t('signUpPage.passwordConfirm')}
                       </label>
-                      {(errors.passwordConf && touched.passwordConf)
-                        ? getWarningValidation('passwordConf', 'signUpPage.passwordMatch')
-                        : setPasswordConfValidErr(false)}
+                      {(errors.passwordConf && touched.passwordConf) && getWarningValidation('signUpPage.passwordMatch')}
                       {signUpError && (
                         <div className="position-absolute card border-0 bg-danger text-light smallFont w-100 margin-top-2px ps-2">
                           {t('signUpPage.userExists')}
                         </div>
                       )}
                     </div>
-                    <button type="submit" className="w-100 btn btn-outline-primary" disabled={isBtnDisabled}>
+                    <button type="submit" className="w-100 btn btn-outline-primary" disabled={btnDisabled}>
                       {t('signUpPage.signUp')}
                     </button>
                   </Form>
