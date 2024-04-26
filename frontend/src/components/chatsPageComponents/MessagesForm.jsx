@@ -122,7 +122,7 @@ const MessagesForm = () => {
           labelEl.current.focus();
         }}
       >
-        {({ dirty, setFieldValue }) => {
+        {({ dirty, setFieldValue, handleSubmit }) => {
           useEffect(() => {
             setFieldValue('body', textEditableMsg);
             labelEl.current.focus();
@@ -143,7 +143,7 @@ const MessagesForm = () => {
                           placeholder={t('chatsPage.placeholder')}
                           ref={textareaEl}
                           onKeyDown={(e) => {
-                            if (e.key === 'Enter') e.target += '\n';
+                            if (e.key === 'Enter' && !e.shiftKey) handleSubmit();
                           }}
                           {...field}
                         />
