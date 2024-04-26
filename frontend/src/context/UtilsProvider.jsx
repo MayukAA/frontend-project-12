@@ -8,8 +8,7 @@ import { UtilsContext } from './index';
 import { updateCurrentChannel } from '../slices/channelsUISlice';
 import { selectorsMessages } from '../slices/messagesSlice';
 
-// const socket = io('ws://localhost:3000');
-const socket = io('wss://hexlet-chat-spn2.onrender.com');
+const socket = io();
 
 const UtilsProvider = ({ children }) => {
   const { currentChannel } = useSelector((state) => state.channelsUI);

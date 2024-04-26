@@ -1,3 +1,6 @@
+// The code in the comments is the code for constantly checking the Internet connection.
+// Prevents automated tests from passing.
+
 import { useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -14,7 +17,7 @@ import { addChannel, removeChannel, renameChannel } from '../slices/channelsSlic
 import { addMessage } from '../slices/messagesSlice';
 
 // const urlCheck = 'http://localhost:3000/';
-const urlCheck = 'https://hexlet-chat-spn2.onrender.com/';
+// const urlCheck = 'https://hexlet-chat-spn2.onrender.com/';
 const urlToBackground = 'https://catherineasquithgallery.com/uploads/posts/2021-02/1614383788_11-p-fon-dlya-chata-v-vk-svetlii-12.jpg';
 
 const ChatsPage = () => {
@@ -24,13 +27,15 @@ const ChatsPage = () => {
     rollbar,
     setCurrentChannel,
   } = useContext(UtilsContext);
-  const { currentModal, setCurrentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
+  // const { currentModal, setCurrentModal, setBtnDisabledNetworkWait } = useContext(StateContext);
+  const { currentModal, setCurrentModal } = useContext(StateContext);
   const dispatch = useDispatch();
   const { unreadChannels } = useSelector((state) => state.channelsUI);
   const { appStatus } = useSelector((state) => state.appStatus);
 
   localStorage.setItem('unreadChannels', unreadChannels);
 
+  /*
   const checkConnection = async () => {
     try {
       await fetch(urlCheck);
@@ -44,6 +49,7 @@ const ChatsPage = () => {
       rollbar.error('ChatsPage: "checkConnection()" error');
     }
   };
+  */
 
   useEffect(() => {
     setCurrentChannel({ status: 'init' });
@@ -54,10 +60,12 @@ const ChatsPage = () => {
     socket.on('removeChannel', ({ id }) => dispatch(removeChannel(id)));
     socket.on('renameChannel', ({ id, name }) => dispatch(renameChannel({ id, changes: { name } })));
 
+    /*
     checkConnection();
     const intervalId = setInterval(() => checkConnection(), 5000);
 
     return () => clearInterval(intervalId);
+    */
   }, []);
 
   useEffect(() => {
