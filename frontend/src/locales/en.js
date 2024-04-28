@@ -54,7 +54,7 @@ export default {
       channelCreated: 'Channel created',
       channelName: 'Channel name',
       removeChannel: 'Remove channel <1># {{channelName}}</1>',
-      channelRemoved: 'Channel # {{channelName}} removed',
+      channelRemoved: 'Channel removed',
       removeMessage: 'Remove message',
       messageRemoved: 'Message removed',
       confirmation: 'Are you sure?',

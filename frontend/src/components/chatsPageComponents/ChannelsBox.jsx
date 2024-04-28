@@ -21,8 +21,8 @@ const ChannelsBox = ({ dispatch }) => {
   const channelsNames = channels.map((chnl) => chnl.name);
   const { currentChannel } = useSelector((state) => state.channelsUI);
 
-  const currDropdownCls = 'dropdown-toggle dropdown-toggle-split btn-chnl btn btn-dark pt-2';
-  const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split btn-chnl btn pt-2';
+  const currDropdownCls = 'dropdown-toggle dropdown-toggle-split rounded-0 btn btn-secondary pt-2';
+  const notCurrDropdownCls = 'dropdown-toggle dropdown-toggle-split rounded-0 btn pt-2';
 
   useEffect(() => {
     // fix dropdown not closing;

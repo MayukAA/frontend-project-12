@@ -11,7 +11,7 @@
 
 ### Usage
 
-Follow this [link](https://hexlet-chat-spn2.onrender.com).
+Follow this [link](https://hexlet-chat-spn2.onrender.com).  
 Sign up with your own nickname and password or log in with the admin account:  
 `Login: "admin"; Password: "admin"`.
 

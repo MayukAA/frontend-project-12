@@ -21,7 +21,7 @@ const RemoveChannelModal = ({ id, name }) => {
     socket.emit('removeChannel', { id: chnlId }, ({ status }) => {
       if (status === 'ok') {
         closeModal();
-        toast.info(t('modals.channelRemoved', { channelName: profanityCleanChannelName }));
+        toast.success(t('modals.channelRemoved'));
       } else {
         toast.error(t('networkError'));
         rollbar.error('RemoveChannelModal error');
@@ -60,7 +60,7 @@ const RemoveChannelModal = ({ id, name }) => {
               <div className="d-flex justify-content-end">
                 <button
                   type="button"
-                  className="btn btn-outline-dark me-2"
+                  className="btn btn-dark me-2"
                   style={getButtonStyle()}
                   onClick={closeModal}
                   disabled={buttonsDisabled}
@@ -69,7 +69,7 @@ const RemoveChannelModal = ({ id, name }) => {
                 </button>
                 <button
                   type="button"
-                  className="btn btn-outline-danger"
+                  className="btn btn-danger"
                   style={getButtonStyle()}
                   onClick={() => emitSocket(id)}
                   disabled={buttonsDisabled || btnDisabledNetworkWait}

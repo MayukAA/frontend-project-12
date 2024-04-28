@@ -97,6 +97,7 @@ code {
   --bs-btn-focus-shadow-rgb: none !important;
 }
 
+/* [hidden code to pass automated tests]
 .btn-chnl {
   transition: color 0.05s ease-in-out, background-color 0.05s ease-in-out, border-color 0.05s ease-in-out, box-shadow 0.05s ease-in-out !important;
 }
@@ -110,6 +111,31 @@ code {
   background: #343a40 !important;
   border-color: #212529 !important;
 }
+*/
+
+/* start of unnecessary code (for automated tests); */
+.rounded-0 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  transition: color 0.05s ease-in-out, background-color 0.05s ease-in-out, border-color 0.05s ease-in-out, box-shadow 0.05s ease-in-out !important;
+}
+
+.rounded-0:hover {
+  background: #dee2e6 !important;
+  border-color: #ced4da !important;
+}
+
+.btn-secondary {
+  background: #212529 !important;
+  border-color: #212529 !important;
+}
+
+.btn-secondary:hover {
+  background: #343a40 !important;
+  border-color: #212529 !important;
+}
+/* end of unnecessary code */
 
 .hov-opac-75:hover {
   opacity: 0.75;

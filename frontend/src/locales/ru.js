@@ -55,7 +55,7 @@ export default {
       channelCreated: 'Канал создан',
       channelName: 'Имя канала',
       removeChannel: 'Удалить канал <1># {{channelName}}</1>',
-      channelRemoved: 'Канал # {{channelName}} удален',
+      channelRemoved: 'Канал удален',
       removeMessage: 'Удалить сообщение',
       messageRemoved: 'Сообщение удалено',
       confirmation: 'Уверены?',
