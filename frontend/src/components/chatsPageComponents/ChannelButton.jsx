@@ -13,7 +13,7 @@ const ChannelButton = ({ id, name }) => {
   const isCurrentChannel = id === currentChannel.id;
   const isUnreadChannel = unreadChannels.includes(id);
   const profanityCleanChannelName = leoProfanity.clean(name);
-  const buttonChannelClass = cn('w-100', 'rounded-0', 'btn', 'text-start', 'text-truncate', {
+  const buttonChannelClass = cn('w-100', 'rounded-0', 'text-start', 'text-truncate', 'btn', {
     'btn-secondary': isCurrentChannel,
   });
 
