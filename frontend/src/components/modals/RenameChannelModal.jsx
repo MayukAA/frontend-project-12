@@ -21,7 +21,7 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
   const { setCurrentModal, btnDisabledNetworkWait } = useContext(StateContext);
   const [invalidForm, setInvalidForm] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const inputEl = useRef();
+  const labelEl = useRef();
   const { i18n } = useTranslation();
 
   const profanityCleanChannelName = leoProfanity.clean(oldName);
@@ -31,8 +31,7 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
   const channelSchema = getModalSchema(channelsNames);
 
   useEffect(() => {
-    inputEl.current.focus();
-    inputEl.current.select();
+    labelEl.current.focus();
   }, []);
 
   const formFieldClass = cn('form-control', {
@@ -40,6 +39,8 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
     'mb-2': invalidForm,
     'is-invalid': invalidForm,
   });
+
+  const handleFocus = (e) => e.target.select();
 
   const makeInvldForm = (error) => {
     setInvalidForm(true);
@@ -102,16 +103,18 @@ const RenameChannelModal = ({ id, oldName, channelsNames }) => {
                   });
                 }}
               >
-                {({ errors, touched }) => (
+                {({ values, errors, touched }) => (
                   <Form>
-                    <Field name="name">
-                      {({ field }) => (
-                        <div>
-                          <input name="name" id="name" className={formFieldClass} {...field} ref={inputEl} />
-                          <label htmlFor="name" className="visually-hidden">{t('modals.channelName')}</label>
-                        </div>
-                      )}
-                    </Field>
+                    <label htmlFor="name" className="visually-hidden" ref={labelEl}>
+                      {t('modals.channelName')}
+                    </label>
+                    <Field
+                      name="name"
+                      id="name"
+                      className={formFieldClass}
+                      value={values.name}
+                      onFocus={handleFocus}
+                    />
                     {errors.name && touched.name ? makeInvldForm(errors.name) : resetInvldForm()}
                     <div className="d-flex justify-content-end">
                       <button

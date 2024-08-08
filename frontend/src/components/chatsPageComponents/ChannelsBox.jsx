@@ -32,7 +32,7 @@ const ChannelsBox = ({ dispatch }) => {
     dispatch(resetUnreadChannel(currentChannel.id));
 
     handleResetMsgEditingMode();
-  }, [currentChannel]);
+  }, [currentChannel]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (scrollChnlEl.current) {
@@ -47,7 +47,7 @@ const ChannelsBox = ({ dispatch }) => {
 
       observer.observe(scrollChnlEl.current);
     }
-  }, [scrollChnlEl.current]);
+  }, [scrollChnlEl.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="col-4 col-md-2 border-end bg-light flex-column h-100 d-flex px-0">

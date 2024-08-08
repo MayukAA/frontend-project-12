@@ -43,13 +43,14 @@ const MessagesBox = () => {
         msgBoxBottom.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currChnlUsersMsgsCount, fieldSizeForScroll]);
 
   useEffect(() => {
     if (!msgEditingMode && isScrollBottom) {
       msgBoxBottom.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [currChnlEditedMsgs]);
+  }, [currChnlEditedMsgs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (msgEditingMode) {
@@ -64,7 +65,7 @@ const MessagesBox = () => {
 
       observer.observe(editableMsgEl.current);
     }
-  }, [idEditableMsg, fieldSizeForScroll]);
+  }, [idEditableMsg, fieldSizeForScroll]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleScroll = () => {
     const smallMarginPx = 25;

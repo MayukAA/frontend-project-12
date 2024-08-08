@@ -7,11 +7,27 @@ import {
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { GoPaperAirplane, GoX, GoCheck } from 'react-icons/go';
-import { Formik, Field, Form } from 'formik';
+import {
+  useFormikContext,
+  Formik,
+  Field,
+  Form,
+} from 'formik';
 import cn from 'classnames';
 
 import { AuthorizationContext, UtilsContext, StateContext } from '../../context/index';
 import getFormattedDate from '../../utils/getFormattedDate';
+
+const FieldTextComp = () => {
+  const { textEditableMsg } = useContext(StateContext);
+  const { setFieldValue } = useFormikContext();
+
+  useEffect(() => {
+    setFieldValue('body', textEditableMsg);
+  }, [textEditableMsg]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return null;
+};
 
 const MessagesForm = () => {
   const { currentUser } = useContext(AuthorizationContext);
@@ -49,7 +65,11 @@ const MessagesForm = () => {
     textareaEl.current.setAttribute('style', `height: ${textareaHeight}px; resize: none`);
 
     if (isScrollBottom || msgEditingMode) setFieldSizeForScroll(textareaHeight);
-  }, [fieldText]);
+  }, [fieldText]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    labelEl.current.focus();
+  }, [textEditableMsg]);
 
   const formContainerClass = cn('mt-auto', 'border-top', 'px-5', {
     'py-3': !msgEditingMode,
@@ -122,51 +142,45 @@ const MessagesForm = () => {
           labelEl.current.focus();
         }}
       >
-        {({ dirty, setFieldValue, handleSubmit }) => {
-          useEffect(() => {
-            setFieldValue('body', textEditableMsg);
-            labelEl.current.focus();
-          }, [textEditableMsg]);
-
-          return (
-            <Form className="py-1">
-              <div className="has-validation">
-                <Field name="body">
-                  {({ field }) => (
-                    <div className="d-flex w-100" onChange={setFieldText(field.value)}>
-                      <label htmlFor="body" className="w-100 me-2" ref={labelEl}>
-                        <textarea
-                          name="body"
-                          id="body"
-                          className="form-control border-secondary px-2"
-                          aria-label={t('chatsPage.newMessage')}
-                          placeholder={t('chatsPage.placeholder')}
-                          ref={textareaEl}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) handleSubmit();
-                          }}
-                          {...field}
-                        />
-                      </label>
-                      {msgEditingMode
-                        ? (
-                          <button type="submit" className="btn btn-outline-success hov-opac-75 btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>
-                            <GoCheck className="middleIcon" />
-                            <span className="visually-hidden">{t('chatsPage.edit')}</span>
-                          </button>
-                        ) : (
-                          <button type="submit" className="btn btn-outline-primary hov-opac-75 btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>
-                            <GoPaperAirplane className="middleIcon" />
-                            <span className="visually-hidden">{t('send')}</span>
-                          </button>
-                        )}
-                    </div>
-                  )}
-                </Field>
-              </div>
-            </Form>
-          );
-        }}
+        {({ dirty, handleSubmit }) => (
+          <Form className="py-1">
+            <FieldTextComp />
+            <div className="has-validation">
+              <Field name="body">
+                {({ field }) => (
+                  <div className="d-flex w-100" onChange={setFieldText(field.value)}>
+                    <label htmlFor="body" className="w-100 me-2" ref={labelEl}>
+                      <textarea
+                        name="body"
+                        id="body"
+                        className="form-control border-secondary px-2"
+                        aria-label={t('chatsPage.newMessage')}
+                        placeholder={t('chatsPage.placeholder')}
+                        ref={textareaEl}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !e.shiftKey) handleSubmit();
+                        }}
+                        {...field}
+                      />
+                    </label>
+                    {msgEditingMode
+                      ? (
+                        <button type="submit" className="btn btn-outline-success hov-opac-75 btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>
+                          <GoCheck className="middleIcon" />
+                          <span className="visually-hidden">{t('chatsPage.edit')}</span>
+                        </button>
+                      ) : (
+                        <button type="submit" className="btn btn-outline-primary hov-opac-75 btn-group-vertical" disabled={!dirty || btnDisabledNetworkWait}>
+                          <GoPaperAirplane className="middleIcon" />
+                          <span className="visually-hidden">{t('send')}</span>
+                        </button>
+                      )}
+                  </div>
+                )}
+              </Field>
+            </div>
+          </Form>
+        )}
       </Formik>
     </div>
   );
